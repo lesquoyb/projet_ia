@@ -1,0 +1,63 @@
+titre = carte routière
+legende = carte routière simplifiée représentée par un graphe
+resume = l'itinéraire le plus court entre  E et A est indiqué
+type de scene = courbes
+coin bas gauche de la figure sur l'écran en coordonnées monde = ( -1, -1)
+coin haut droit de la figure sur l'écran en coordonnées monde = ( 10, 10)
+nombre de points remarquables = 10
+point remarquable = 2 black (0,0) O
+point remarquable = 2 black (1,0) 1
+point remarquable = 2 black (0,1) 1
+point remarquable = 5 blue ( 3, 8) G( 3, 8)
+point remarquable = 5 blue ( 3, 2) F( 3, 2)
+point remarquable = 5 blue ( 1, 1) E( 1, 1)
+point remarquable = 5 blue ( 2, 4) D( 2, 4)
+point remarquable = 5 blue ( 5, 1) C( 5, 1)
+point remarquable = 5 blue ( 7, 3) B( 7, 3)
+point remarquable = 5 blue ( 6, 8) A( 6, 8)
+nombre de courbes = 11
+couleur =  green
+nombre de points = 2
+( 1, 1)
+( 3, 2)
+couleur =  green
+nombre de points = 2
+( 2, 4)
+( 3, 2)
+couleur =  green
+nombre de points = 2
+( 2, 4)
+( 1, 1)
+couleur =  green
+nombre de points = 2
+( 5, 1)
+( 3, 2)
+couleur =  green
+nombre de points = 2
+( 5, 1)
+( 1, 1)
+couleur =  green
+nombre de points = 2
+( 5, 1)
+( 2, 4)
+couleur =  green
+nombre de points = 2
+( 7, 3)
+( 5, 1)
+couleur =  green
+nombre de points = 2
+( 6, 8)
+( 2, 4)
+couleur =  green
+nombre de points = 2
+( 6, 8)
+( 5, 1)
+couleur =  green
+nombre de points = 2
+( 6, 8)
+( 7, 3)
+couleur =  red
+nombre de points = 3
+( 1, 1)
+( 2, 4)
+( 6, 8)

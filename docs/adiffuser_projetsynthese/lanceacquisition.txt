@@ -1,0 +1,1 @@
+java -classpath bsplines.jar;malibrairiegui.jar;mesmaths.jar acquisition.TestSaisieCourbe

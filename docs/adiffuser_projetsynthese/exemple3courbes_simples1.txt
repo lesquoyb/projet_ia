@@ -1,0 +1,37 @@
+3 courbes simples
+un carré, un triangle et un M
+le carré est rouge, le triangle est vert et le M est bleu
+courbes
+(-2.5,-2.5)
+(2.5,2.5)
+9
+black (0,0) o
+black (1,0)1
+black (2,0)2
+black(0,1) 1
+black(0,2) 2
+black (-1,0) -1
+black(-2,0) -2
+black(0,-1) -1
+black(0,-2) -2
+3
+red
+5
+( 1.5,   1.5)
+( -1.5,  1.5)
+( -1.5, -1.5)
+( 1.5,  -1.5)
+( 1.5,   1.5)
+green
+4
+(  0.5,  1)
+( -0.5,  1)
+(    0, -1)
+(  0.5,  1)
+blue
+5
+( 1.5,  0)
+( 0.8, 1.5)
+( 0, 0.8)
+( -0.8, 1.5)
+( -1.5,  0)
