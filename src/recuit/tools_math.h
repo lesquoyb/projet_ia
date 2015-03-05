@@ -31,7 +31,7 @@ fonction dont la courbe C est une sinusoïde amortie de minimum -5 en 0 de pseud
 inline double f2(const double & t)
 {
 static double A = 5;
-static double w = 2*M_PI;
+static double w = 2 * 3.1415; // M_PI
 
 return -A*cos(w*t)/(1+abs(t));
 }

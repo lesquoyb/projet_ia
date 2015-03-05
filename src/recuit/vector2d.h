@@ -11,7 +11,7 @@
 
 #include <iostream>
 #include <string>
-#include <cmath>
+#include <math.h>
 
 using namespace std;
 
@@ -40,6 +40,8 @@ public:
     operator string() const;
 
 };
+
+inline double max(double a, double b) { return (a > b) ? a : b; };
 
 inline const Vecteur2D operator *(const double & a, const Vecteur2D & u) { return u*a;}
 

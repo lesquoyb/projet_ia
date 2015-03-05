@@ -6,65 +6,64 @@
 
 
 template <class S, class T>
-class Graphe
-{
+class Graphe {
 protected:
-int prochaineClef;
+	int prochaineClef;
+
 public:
+	PElement< Arete<S,T> > * lAretes; // liste d'arêtes
+	PElement< Sommet<T> > * lSommets; // liste de sommets
 
-PElement< Arete<S,T> > * lAretes; // liste d'arêtes
-PElement< Sommet<T> > * lSommets; // liste de sommets
+	/**
+	 * crée un graphe vide
+	 * */
+	Graphe();
 
-/**
- * crée un graphe vide
- * */
-Graphe();
+	/**
+	 * constructeur de copie obligatoire car la classe comporte une partie dynamique
+	 * */
+	Graphe(const Graphe<S,T> & graphe);
 
-/**
- * constructeur de copie obligatoire car la classe comporte une partie dynamique
- * */
-Graphe(const Graphe<S,T> & graphe);
+	/**
+	 * opérateur = obligatoire car la classe comporte une partie dynamique
+	 * */
+	const Graphe<S,T> & operator = (const Graphe<S,T> & graphe);
 
-/**
- * opérateur = obligatoire car la classe comporte une partie dynamique
- * */
-const Graphe<S,T> & operator = (const Graphe<S,T> & graphe);
+	/**
+	 * destructeur obligatoire car la classe comporte une partie dynamique
+	 * */
+	~Graphe();
 
-/**
- * destructeur obligatoire car la classe comporte une partie dynamique
- * */
-~Graphe();
+	int nombreSommets() const;
+	int nombreAretes() const;
 
-int nombreSommets() const;
-int nombreAretes() const;
+	/**
+	 * crée un sommet isolé
+	 * */
+	Sommet<T> * creeSommet(const T & info);
 
-/**
- * crée un sommet isolé
- * */
-Sommet<T> * creeSommet(const T & info);
+	/**
+	 * crée une arête joignant les 2 sommets debut et fin
+	 *
+	 * * met à jour les champs degré de debut et de fin
+	 * */
+	Arete<S,T> * creeArete( Sommet<T> * debut, Sommet<T> * fin, const S & info);
 
-/**
- * crée une arête joignant les 2 sommets debut et fin
- *
- * * met à jour les champs degré de debut et de fin
- * */
-Arete<S,T> * creeArete( Sommet<T> * debut, Sommet<T> * fin, const S & info);
+	/**
+	recherche la liste des paires (voisin, arête) adjacentes de sommet dans le graphe
+	*/
+	PElement< pair< Sommet<T> *, Arete<S,T>* > >  *
+	adjacences(const Sommet<T> * sommet) const;
+	operator string() const;
 
-/**
-recherche la liste des paires (voisin, arête) adjacentes de sommet dans le graphe
-*/
-PElement< pair< Sommet<T> *, Arete<S,T>* > >  *
-adjacences(const Sommet<T> * sommet) const;
-operator string() const;
-
-/**
- * cherche l'arête s1 - s2 ou l'arête s2 - s1 si elle existe
- *
- * DONNEES : s1 et s2 deux sommets quelconques du graphe
- * RESULTATS : l'arête s'appuyant sur s1 et s2 si elle existe, NULL sinon
- *
- * */
-Arete<S,T> * getAreteParSommets( const Sommet<T> * s1, const Sommet<T> * s2) const;
+	/**
+	 * cherche l'arête s1 - s2 ou l'arête s2 - s1 si elle existe
+	 *
+	 * DONNEES : s1 et s2 deux sommets quelconques du graphe
+	 * RESULTATS : l'arête s'appuyant sur s1 et s2 si elle existe, NULL sinon
+	 *
+	 * */
+	Arete<S,T> * getAreteParSommets( const Sommet<T> * s1, const Sommet<T> * s2) const;
 
 
 };
@@ -74,7 +73,7 @@ Arete<S,T> * getAreteParSommets( const Sommet<T> * s1, const Sommet<T> * s2) con
  *
  * */
 template <class S, class T>
-Graphe<S,T>::Graphe():prochaineClef(0),lAretes(NULL),lSommets(NULL){}
+Graphe<S,T>::Graphe(): prochaineClef(0),lAretes(NULL),lSommets(NULL){}
 
 template <class S, class T>
 Graphe<S,T>::Graphe(const Graphe<S,T> & graphe){
@@ -187,7 +186,6 @@ recherche la liste des paires (voisin, arête) adjacentes de sommet dans le grap
 template <class S, class T>
 PElement< pair< Sommet<T> *, Arete<S,T>* > >  *  Graphe<S,T>::adjacences(const Sommet<T> * sommet) const{
     const PElement< Arete<S,T> > * l;
-
     PElement< pair< Sommet<T> *, Arete<S,T>* > > * r;
 
     for ( l = lAretes, r = NULL; l; l = l->s)
@@ -204,8 +202,4 @@ PElement< pair< Sommet<T> *, Arete<S,T>* > >  *  Graphe<S,T>::adjacences(const S
 }
 
 
-
-
-
 #endif // GRAPHE
-

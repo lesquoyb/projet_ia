@@ -18,17 +18,14 @@ template <class T>
 class PElement{
 
 public :
-
     T * v;
     PElement<T> * s;
-
 
     /**
      * Ne crée pas de copie de *v.
     Pointe donc sur la donnée originale *v
      * */
     PElement( T * v, PElement<T> * s ): v(v),s(s){}
-
 
     static const string toString(const PElement<T> * p,
                         const char * debut="( ",
@@ -126,7 +123,6 @@ public :
               return PElement<T>::retire(a,l->s);
     }
 
-
     /**
      * retire l'élément situé en tête de l et le renvoie. Le 1er maillon de l est effacé.
      *
@@ -143,11 +139,7 @@ public :
         l = l->s; delete tete;
         return a;
     }
-
-
 };
-
-
 
 
 template<class T>

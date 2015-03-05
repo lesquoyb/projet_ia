@@ -14,10 +14,7 @@
 using std::string;
 
 template <class T>
-inline const T operator - (const T & u, const T & v)
-{
-return u + -v;
-}
+inline const T operator-(const T & u, const T & v) { return u + -v; }
 
 /*
 template <class T>
@@ -27,43 +24,25 @@ return u * a;
 }
 */
 
+// OPERATOR
 template <class T>
-inline const T operator / (const T & u, const double & a)
-{
-return u * (1/a);
+inline const T operator/(const T & u, const double & a) { return u * (1/a); }
+template <class T>
+inline const T& operator*=(T & u, const T & v) {
+	u = u * v;
+	return u;
 }
+template <class T>
+inline const T& operator-=( T & u, const T & v) { return u += -v; }
+template <class T>
+inline const T& operator/=( T & u, const double & a) { return u *= (1/a); }
+
+// NORME
+template <class T>
+inline double norme(const T & u) { return sqrt(u*u); }
 
 template <class T>
-inline const T & operator *=(T & u, const T & v)
-{
-u = u * v;
-
-return u;
-}
-
-template <class T>
-inline const T & operator -= ( T & u, const T & v)
-{
-return u += -v;
-}
-
-template <class T>
-inline const T & operator /= ( T & u, const double & a)
-{
-return u *= (1/a);
-}
-
-template <class T>
-inline double norme(const T & u)
-{
-return sqrt(u*u);
-}
-
-template <class T>
-inline double norme2(const T & u)
-{
-return (u*u);
-}
+inline double norme2(const T & u) { return (u*u); }
 
 /*
 template <class T>
@@ -74,7 +53,4 @@ return os;
 }
 */
 
-
-
 #endif // ALGEBRE_LINEAIRE
-
