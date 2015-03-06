@@ -25,6 +25,11 @@ public:
             arcsList = new PElement<Arete<ArcCost, VertexType> >(arete, arcsList);
         }
 
+        ostream& operator <<(ostream& stream){
+            stream << arcsList;
+            return stream;
+        }
+
 
     };
 
