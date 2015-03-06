@@ -13,8 +13,25 @@
 #include "vector2d.h"
 #include "recuit_simule_d2.h"
 
-double decrement(double old_temp){return old_temp--;}
+double decrement(const double &old_temp){return old_temp-1;}
 //using Graphe<double,string>::CycleEuclidien;
+
+
+double cout_cycle(const Graphe<double,string>::CycleEulerien &c){
+    double total = 0;
+    for (PElement< Arete<double, string> >* i = c.arcsList; i != NULL; i = i->suivant){
+        total += i->valeur->valeur;
+    }
+    return total;
+}
+
+
+
+const Graphe<double,string>::CycleEulerien changement(const Graphe<double,string>::CycleEulerien &c){
+    /*TODO*/
+
+    return c;
+}
 
 void vrai_test(){
 
@@ -38,10 +55,10 @@ void vrai_test(){
 
     /* TODO */
     //graphe.complet();
-    Graphe<double,string>::CycleEuclidien solutionInitiale = graphe.getFirstCycle();
+    Graphe<double,string>::CycleEulerien solutionInitiale = graphe.getFirstCycle();
     cout << "graphe: " << graphe <<endl;
 
-    SolutionCout< Graphe<double,string>::CycleEuclidien* > solution = recuitSimule(temp_init, temp_final, nb_max_iteration, nb_max_succes, solutionInitiale, &Graphe<double,string>::CycleEuclidien::cout, &Graphe<double,string>::CycleEuclidien::changement, &decrement);
+    SolutionCout< Graphe<double,string>::CycleEulerien > solution = recuitSimule(temp_init, temp_final, nb_max_iteration, nb_max_succes, solutionInitiale, &cout_cycle, &changement, &decrement);
 
     cout << "cout de la solution: " << solution.cout << endl;
     cout << "meilleur chemin: " << solution.solution << endl;

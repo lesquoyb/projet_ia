@@ -15,27 +15,15 @@ protected:
 public:
 
 
-	class CycleEuclidien{
 
 	public:
 
-		PElement< Arete<ArcCost, VertexType> > arcsList;
 
-		static double cout(const CycleEuclidien *c){
-			double total = 0;
-			for (PElement< Arete<ArcCost, VertexType> >* i = c->arcsList; i != NULL; i = i->suivant){
-				total += i->valeur->v;
-			}
-			return total;
-		}
 
 		void insert(const Arete<ArcCost, VertexType> * arcsList){
 			arcsList = new PElement<Arete<ArcCost, VertexType> >(arete, arcsList);
 		}
 
-		static CycleEuclidien* changement(const CycleEuclidien *c){
-			/*TODO*/
-		}
 
 	};
 
@@ -45,7 +33,6 @@ public:
 
 
 
-	CycleEuclidien getFirstCycle()const{
 		/* TODO achtung graphe avec un élément */
         CycleEuclidien c;
         Sommet<VertexType>* last = lAretes->valeur;
@@ -192,7 +179,6 @@ Arete<S, T> * Graphe<S, T>::getAreteParSommets(const Sommet<T> * s1, const Somme
 
 // Retourne la liste des voisins d'un Sommet => Pair(Sommet - Arete)
 template <class S, class T>
-PElement<pair<Sommet<T>*, Arete<S, T>*>>* Graphe<S, T>::adjacences(const Sommet<T> * sommet) const{
 	const PElement< Arete<S, T> > * l;
 	PElement< pair< Sommet<T> *, Arete<S, T>* > > * r;
 
