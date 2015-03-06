@@ -17,6 +17,7 @@ template <class ArcCost, class VertexType>
 class Arete : public GElement {
 
 public:
+
     Sommet <VertexType> *debut, *fin;
     ArcCost v;
 	
@@ -40,12 +41,11 @@ public:
 template <class S, class T>
 Arete<S,T>::operator string () const {
 	ostringstream oss;
-
 	oss << "Arete  (" << endl;
 	oss << GElement::operator string() << endl;
 	oss << "clef debut = " << debut->clef << endl;
 	oss << "clef fin = " << fin->clef << endl;
-	oss << "v = " << v << endl;
+	oss << "v = " << valeur << endl;
 	oss << ")";
 	return oss.str();
 }
@@ -53,14 +53,6 @@ Arete<S,T>::operator string () const {
 template <class S, class T>
 ostream & operator << (ostream & os, const Arete<S,T> & arete) { return os << (string) arete; }
 
-/**
- * vérifie si *this s'appuie sur s1 et s2
- *
- * DONNEES : *this, s1, s2
- *
- * RESULTATS : true si *this s'appuie sur s1 et s2 c'est-à-dire si (début == s1 et fin == s2) ou (début == s2 et fin == s1), false sinon
- *
- * */
 template <class S, class T>
 bool Arete<S,T>::estEgal( const Sommet<T> * s1, const Sommet<T> * s2) const { 
 	return (s1 == debut && s2 == fin) || (s1 == fin && s2 == debut);

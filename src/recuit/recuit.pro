@@ -26,5 +26,6 @@ HEADERS += \
     recuit_simule_d1.h \
     test_recuit_simule_d1.h \
     test_recuit_simule_d2.h \
-    recuit_simule_d2.h
+    recuit_simule_d2.h \
+    vrai_test.h
 
