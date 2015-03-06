@@ -15,27 +15,16 @@ protected:
 public:
 
 
-    class CycleEuclidien{
+    class CycleEulerien{
 
     public:
 
-        PElement< Arete<ArcCost, VertexType> > arcsList;
+        PElement< Arete<ArcCost, VertexType> >* arcsList;
 
-        static double cout(const CycleEuclidien *c){
-            double total = 0;
-            for (PElement< Arete<ArcCost, VertexType> >* i = c->arcsList; i != NULL; i = i->suivant){
-                total += i->valeur->v;
-            }
-            return total;
-        }
-
-        void insert(const Arete<ArcCost, VertexType> * arcsList){
+        void insert(const Arete<ArcCost, VertexType> * arete){
             arcsList = new PElement<Arete<ArcCost, VertexType> >(arete, arcsList);
         }
 
-        static CycleEuclidien* changement(const CycleEuclidien *c){
-            /*TODO*/
-        }
 
     };
 
