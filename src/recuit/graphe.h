@@ -40,16 +40,18 @@ public:
     CycleEulerien getFirstCycle()const{
 		/* TODO achtung graphe avec un élément */
         CycleEulerien c;
-		Sommet<VertexType>* last = lAretes->valeur;
+        //Sommet<VertexType>* last = lSommets->valeur;
 		for (PElement< Sommet<VertexType> >* sommet = lSommets->suivant; sommet != NULL; sommet = sommet->suivant){
 			if (sommet->suivant == NULL){
-				c.insert(lAretes->valeur->clef);
+                //si suivant est null on fait l'arrête sommet -> last
+                //c.insert();
 				/*TODO */
 				//   c.arcsList = new PElement<
 
 			}
 
 		}
+        return c;
 	}
 
 	Graphe();

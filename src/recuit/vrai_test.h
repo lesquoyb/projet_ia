@@ -36,10 +36,10 @@ const Graphe<double,string>::CycleEulerien changement(const Graphe<double,string
 void vrai_test(){
 
     cout << "lololo" <<endl;
-    double temp_init = 50;
+    double temp_init = 0;
     double temp_final = 0;
-    int nb_max_iteration = 500;
-    int nb_max_succes = 100;
+    int nb_max_iteration = 10;
+    int nb_max_succes = 10;
     Graphe<double,string> graphe;
     graphe.creeSommet("A");
     graphe.creeSommet("B");
@@ -61,7 +61,7 @@ void vrai_test(){
     SolutionCout< Graphe<double,string>::CycleEulerien > solution = recuitSimule(temp_init, temp_final, nb_max_iteration, nb_max_succes, solutionInitiale, &cout_cycle, &changement, &decrement);
 
     cout << "cout de la solution: " << solution.cout << endl;
-    cout << "meilleur chemin: " << solution.solution << endl;
+    cout << "meilleur chemin: " << solution.solution.arcsList << endl;
 
 }
 
