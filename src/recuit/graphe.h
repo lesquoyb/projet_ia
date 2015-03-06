@@ -15,21 +15,29 @@ protected:
 public:
 
 
-    class CycleEulerien{
+    class CycleEuclidien{
 
-	public:
+    public:
 
-        PElement< Arete<ArcCost, VertexType> >* arcsList;
+        PElement< Arete<ArcCost, VertexType> > arcsList;
 
+        static double cout(const CycleEuclidien *c){
+            double total = 0;
+            for (PElement< Arete<ArcCost, VertexType> >* i = c->arcsList; i != NULL; i = i->suivant){
+                total += i->valeur->v;
+            }
+            return total;
+        }
 
+        void insert(const Arete<ArcCost, VertexType> * arcsList){
+            arcsList = new PElement<Arete<ArcCost, VertexType> >(arete, arcsList);
+        }
 
-        void insert(const Arete<ArcCost, VertexType> * arete){
-			arcsList = new PElement<Arete<ArcCost, VertexType> >(arete, arcsList);
-		}
+        static CycleEuclidien* changement(const CycleEuclidien *c){
+            /*TODO*/
+        }
 
-
-
-	};
+    };
 
 
 	PElement< Arete<ArcCost, VertexType> > * lAretes; // liste d'arêtes
@@ -38,7 +46,7 @@ public:
 
 
     CycleEulerien getFirstCycle()const{
-		/* TODO achtung graphe avec un élément */
+        /* TODO achtung graphe avec un élément */
         CycleEulerien c;
         //Sommet<VertexType>* last = lSommets->valeur;
 		for (PElement< Sommet<VertexType> >* sommet = lSommets->suivant; sommet != NULL; sommet = sommet->suivant){
