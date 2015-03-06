@@ -14,8 +14,7 @@
 #include "recuit_simule_d2.h"
 
 double decrement(double old_temp){return old_temp--;}
-
-using Graphe<double,string>::CycleEuclidien;
+//using Graphe<double,string>::CycleEuclidien;
 
 void vrai_test(){
 
@@ -33,16 +32,16 @@ void vrai_test(){
 
     for( PElement<Sommet<string> >* i = graphe.lSommets ;  i != NULL ; i = i->suivant ){
         for(PElement<Sommet<string> >* j = graphe.lSommets ;  j != NULL ; i = j->suivant){
-             graphe.creeArete(i->valeur,j->valeur,random()*50);
+            graphe.creeArete(i->valeur,j->valeur,50*rand());
         }
     }
 
     /* TODO */
     //graphe.complet();
-    CycleEuclidien* solutionInitiale = graphe.getFirstCycle();
+    Graphe<double,string>::CycleEuclidien solutionInitiale = graphe.getFirstCycle();
     cout << "graphe: " << graphe <<endl;
 
-    SolutionCout < CycleEuclidien* > solution = recuitSimule(temp_init, temp_final, nb_max_iteration, nb_max_succes, solInitiale, &CycleEuclidien::cout, &CycleEuclidien::changement, &decrement);
+    SolutionCout< Graphe<double,string>::CycleEuclidien* > solution = recuitSimule(temp_init, temp_final, nb_max_iteration, nb_max_succes, solutionInitiale, &Graphe<double,string>::CycleEuclidien::cout, &Graphe<double,string>::CycleEuclidien::changement, &decrement);
 
     cout << "cout de la solution: " << solution.cout << endl;
     cout << "meilleur chemin: " << solution.solution << endl;
