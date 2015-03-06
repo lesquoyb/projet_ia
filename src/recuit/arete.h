@@ -19,10 +19,10 @@ class Arete : public GElement {
 public:
 
     Sommet <VertexType> *debut, *fin;
-    ArcCost v;
+    ArcCost valeur;
 	
     Arete(int clef, Sommet<VertexType> * debut, Sommet<VertexType> * fin, const ArcCost & v):
-		GElement(clef),debut(debut),fin(fin),v(v){}
+        GElement(clef),debut(debut),fin(fin),valeur(v){}
 
 	operator string () const;
 
