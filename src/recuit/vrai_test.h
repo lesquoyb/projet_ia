@@ -13,7 +13,7 @@
 #include "vector2d.h"
 #include "recuit_simule_d2.h"
 
-double decrement(double old_temp){return old_temp--;}
+double decrement(const double &old_temp){return old_temp-1;}
 //using Graphe<double,string>::CycleEuclidien;
 
 
