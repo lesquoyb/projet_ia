@@ -18,14 +18,14 @@ template <class T>
 class PElement{
 
 public :
-    T * v;
-    PElement<T> * s;
+    T * valeur;
+    PElement<T> * suivant;
 
     /**
      * Ne crée pas de copie de *v.
     Pointe donc sur la donnée originale *v
      * */
-    PElement( T * v, PElement<T> * s ): v(v),s(s){}
+    PElement( T * v, PElement<T> * s ): valeur(v),suivant(s){}
 
     static const string toString(const PElement<T> * p,
                         const char * debut="( ",
@@ -33,8 +33,8 @@ public :
                         const char * fin=")"){
         PElement<T> * r;
         ostringstream oss;
-        for ( r = (PElement<T>* ) p, oss << debut; r; r = r->s){
-            oss << *(r->v) << separateur;
+        for ( r = (PElement<T>* ) p, oss << debut; r; r = r->suivant){
+            oss << *(r->valeur) << separateur;
         }
         oss << fin;
         return oss.str();
@@ -43,18 +43,18 @@ public :
     static int taille(const PElement<T> * l){
         if (!l) return 0;
         else
-          return 1 + PElement<T>::taille(l->s);
+          return 1 + PElement<T>::taille(l->suivant);
     }
 
 
-    static bool appartient(const T * e,const PElement<T> * list){
+    static bool appartient(const T * element,const PElement<T> * list){
         if(list == NULL){
             return false;
         }
-        if(list->v == e){
+        if(list->valeur == element){
             return true;
         }
-        return appartient(e,list->s);
+        return appartient(element,list->suivant);
     }
 
     /**
@@ -64,7 +64,7 @@ public :
      * */
     static void efface1(PElement<T>* & l){
         if (l){
-           PElement<T>::efface1(l->s);
+           PElement<T>::efface1(l->suivant);
            delete l; l = NULL;
        }
     }
@@ -76,8 +76,8 @@ public :
      * */
     static void efface2(PElement<T>* & l){
         if (l){
-           PElement<T>::efface2(l->s);
-           delete l->v; delete l; l = NULL;
+           PElement<T>::efface2(l->suivant);
+           delete l->valeur; delete l; l = NULL;
        }
     }
 
@@ -94,10 +94,10 @@ public :
     static void insertionOrdonnee( T * a, PElement<T> * & l,
                                    bool (*estPlusPetitOuEgal)(const T * a1, const T * a2)){
 
-        if (!l || estPlusPetitOuEgal(a,l->v))
+        if (!l || estPlusPetitOuEgal(a,l->valeur))
            l = new PElement<T>(a,l);
         else
-           PElement<T>::insertionOrdonnee(a,l->s,estPlusPetitOuEgal);
+           PElement<T>::insertionOrdonnee(a,l->suivant,estPlusPetitOuEgal);
     }
 
     /**
@@ -114,13 +114,13 @@ public :
         if (!l)
            return false;
         else
-           if (a == l->v)
+           if (a == l->valeur)
               {
-              PElement<T> * r = l; l = l->s; delete r;
+              PElement<T> * r = l; l = l->suivant; delete r;
               return true;
               }
            else
-              return PElement<T>::retire(a,l->s);
+              return PElement<T>::retire(a,l->suivant);
     }
 
     /**
@@ -133,10 +133,10 @@ public :
     static T * depiler(PElement<T> * & l){
         if (!l) throw Exception("impossible de dépiler une pile vide");
 
-        T * a = l->v;
+        T * a = l->valeur;
         PElement<T> * tete = l;
 
-        l = l->s; delete tete;
+        l = l->suivant; delete tete;
         return a;
     }
 };
