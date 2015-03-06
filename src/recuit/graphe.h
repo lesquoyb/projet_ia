@@ -14,20 +14,13 @@ public:
 	PElement< Arete<S,T> > * lAretes; // liste d'arêtes
 	PElement< Sommet<T> > * lSommets; // liste de sommets
 
-	/**
-	 * crée un graphe vide
-	 * */
 	Graphe();
-
-	/**
-	 * constructeur de copie obligatoire car la classe comporte une partie dynamique
-	 * */
 	Graphe(const Graphe<S,T> & graphe);
 
 	/**
 	 * opérateur = obligatoire car la classe comporte une partie dynamique
 	 * */
-	const Graphe<S,T> & operator = (const Graphe<S,T> & graphe);
+	const Graphe<S,T>& operator=(const Graphe<S,T> & graphe);
 
 	/**
 	 * destructeur obligatoire car la classe comporte une partie dynamique
