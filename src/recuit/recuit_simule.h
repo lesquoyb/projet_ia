@@ -60,64 +60,78 @@ retourne aussi le coût de la meilleure soution grâce au paramètre coutBestSol
 */
 template <class S>
 const S recuitSimule1(const double & tInitiale, const double & tFinale, const int nombreTentativesMax, const int nombreSuccesMax, const S & solutionInitiale,
-    double (*cout1)(const S & solution), const S (* changementAleatoire)(const S & solution), double (*succ)(const double & temperature), double & coutBestSolution)
-{
-S solutionCourante, bestSolution;
-double t; // température courante
-double coutCourant;
+                     double (*cout1)(const S & solution), const S (* changementAleatoire)(const S & solution), double (*succ)(const double & temperature), double & coutBestSolution){
 
-for ( t = tInitiale, bestSolution = solutionCourante = solutionInitiale, coutBestSolution = coutCourant = cout1(solutionInitiale); t > tFinale; t = succ(t))
-    {
-    int nombreTentatives, nombreSucces;
-    S solutionPrecedente; double coutPrecedent;
+    S solutionCourante, bestSolution;
+    double t; // température courante
+    double coutCourant;
 
-    for (nombreTentatives = nombreSucces = 0; nombreTentatives < nombreTentativesMax && nombreSucces < nombreSuccesMax; ++nombreTentatives)
-        {
+    for ( t = tInitiale, bestSolution = solutionCourante = solutionInitiale, coutBestSolution = coutCourant = cout1(solutionInitiale); t > tFinale; t = succ(t)){
 
-        solutionPrecedente = solutionCourante; coutPrecedent = coutCourant;
-        solutionCourante = changementAleatoire(solutionCourante); coutCourant = cout1(solutionCourante);
-                                                                                                        //cout<< "solution courante = " << solutionCourante<<", cout = " << coutCourant << endl;
-        if (coutCourant < coutPrecedent)  // la solution courante est meilleure que la solution précédente
-           {
-           ++nombreSucces;
-           if (coutCourant < coutBestSolution)	// la solution courante est meilleure que la meilleure solution trouvée jusqu'à présent
-              {
-              bestSolution = solutionCourante; coutBestSolution = coutCourant;
-              }
+        int nombreTentatives, nombreSucces;
+        S solutionPrecedente;
+        double coutPrecedent;
+
+        for (nombreTentatives = nombreSucces = 0; nombreTentatives < nombreTentativesMax && nombreSucces < nombreSuccesMax; ++nombreTentatives){
+
+            solutionPrecedente = solutionCourante; coutPrecedent = coutCourant;
+            solutionCourante = changementAleatoire(solutionCourante); coutCourant = cout1(solutionCourante);
+                                                                                                            //cout<< "solution courante = " << solutionCourante<<", cout = " << coutCourant << endl;
+            if (coutCourant < coutPrecedent){  // la solution courante est meilleure que la solution précédente
+               nombreSucces++;
+               if (coutCourant < coutBestSolution){	// la solution courante est meilleure que la meilleure solution trouvée jusqu'à présent
+                  bestSolution = solutionCourante; coutBestSolution = coutCourant;
+               }
+            }
+            else{	// coûtCourant >= coûtPrécédent. La solution courante n'est pas meilleure que la solution précédente
+               double v = tirageAleatoire(0,1);
+               double deltaCout = coutCourant - coutPrecedent; // on a deltaCout >= 0
+               double metropolis = exp(-K*deltaCout/t);
+
+               if (v < metropolis){
+                   ++ nombreSucces;		// la solution courante est acceptée bien que moins bonne que la précédente
+               }
+               else{
+                   solutionCourante = solutionPrecedente;
+                   coutCourant = coutPrecedent;             // la solution courante est refusée
+               }
            }
-        else	// coûtCourant >= coûtPrécédent. La solution courante n'est pas meilleure que la solution précédente
-           {
-           double v = tirageAleatoire(0,1);
-           double deltaCout = coutCourant - coutPrecedent; // on a deltaCout >= 0
-           double metropolis = exp(-K*deltaCout/t);
+       }
 
-           if (v < metropolis){
-               ++ nombreSucces;		// la solution courante est acceptée bien que moins bonne que la précédente
-           }
-           else
-              { solutionCourante = solutionPrecedente; coutCourant = coutPrecedent;}	// la solution courante est refusée
-           }
-        }
-    if (nombreSucces == 0) return bestSolution;		// l'algorithme est stationnaire : il a atteint un minimum, on arrête tout et on retourne la meilleure solution trouvée
-
+       if (nombreSucces == 0){
+           return bestSolution;		// l'algorithme est stationnaire : il a atteint un minimum, on arrête tout et on retourne la meilleure solution trouvée
+       }
     }
 
-return bestSolution;
+    return bestSolution;
 }
 
-bool always_true(){return true;}
 
 /**
  *Si le graphe n'est pas complet, rajoute les arcs infini.
  */
-template<class S,class T>
-PElement<T> graphe_complet(const Graphe<S,T> &graphe){
-    for(PElement<T> sommet = graphe.lSommets ; sommet != NULL; sommet = sommet.suivant){
-        if( ! PElement::appartient(sommet.valeur, graphe.lAretes)){
-            PElement::insertionOrdonnee();
+template<class VertexType,class ArcCost>
+PElement<VertexType> graphe_complet(const Graphe<ArcCost,VertexType> &graphe){
+
+    int nbArete = PElement< Arete<ArcCost,VertexType> >::taille(graphe.lAretes);
+    for(PElement<VertexType> sommet = graphe.lSommets ; sommet != NULL; nbArete = PElement<VertexType>::taille(graphe.lAretes), sommet = sommet.suivant){
+        cout << "nb aretes: " << nbArete;
+        if( ! PElement< Arete<ArcCost,VertexType>  >::appartient(sommet.valeur, graphe.lAretes)){
+            add_missing_arcs(sommet.valeur,graphe.lAretes);
         }
 
     }
+}
+
+/**
+ * Ajoute les arc infini reliant le sommet aux autres de lSommets qui ne sont pas dans lAretes
+ * @brief add_missing_arcs
+ * @param sommet
+ * @param lAretes
+ */
+template<class VertexType,class ArcCost>
+void add_missing_arcs(Sommet<VertexType> sommet,PElement< Arete<ArcCost,VertexType> > lAretes){
+
 }
 
 /**
@@ -135,38 +149,37 @@ Le plus simple est d'alors associer une solution particulière et son coût. C'e
 
 */
 template <class S>
-class SolutionCout
-{
+class SolutionCout {
+
 public:
-S solution;
-double cout; // cout de solution
 
-SolutionCout( const S & solution, double (*cout1)( const S & solution)):solution(solution), cout(cout1(solution)) {}
+    S solution;
+    double cout; // cout de solution
 
-const SolutionCout<S> change( const S (*changementAleatoire) (const S & solution), double (*cout1) (const S & solution)) const;
+    SolutionCout( const S & solution, double (*cout1)( const S & solution)):solution(solution), cout(cout1(solution)) {}
 
-operator string() const;
+    const SolutionCout<S> change( const S (*changementAleatoire) (const S & solution), double (*cout1) (const S & solution)) const;
+
+    operator string() const;
+
 };
 
 template <class S>
-ostream & operator << (ostream & os, const SolutionCout<S> & solutionCout)
-{
-return os << (string)solutionCout;
+ostream & operator << (ostream & os, const SolutionCout<S> & solutionCout){
+    return os << (string)solutionCout;
 }
 
 template <class S>
-const SolutionCout<S> SolutionCout<S>::change( const S (*changementAleatoire) (const S & solution), double (*cout1) (const S & solution)) const
-{
-return SolutionCout<S>(changementAleatoire(this->solution), cout1);
+const SolutionCout<S> SolutionCout<S>::change( const S (*changementAleatoire) (const S & solution), double (*cout1) (const S & solution)) const{
+    return SolutionCout<S>(changementAleatoire(this->solution), cout1);
 }
 
 template <class S>
-SolutionCout<S>::operator string() const
-{
-ostringstream oss;
+SolutionCout<S>::operator string() const{
+    ostringstream oss;
 
-oss << "( " << solution <<", " << cout << ")";
-return oss.str();
+    oss << "( " << solution <<", " << cout << ")";
+    return oss.str();
 }
 
 
@@ -177,48 +190,46 @@ Dans cette version, une solution et son coût associé sont associés dans un ob
 */
 template <class S>
 const SolutionCout<S> recuitSimule(const double & tInitiale, const double & tFinale, const int nombreTentativesMax, const int nombreSuccesMax, const S & solutionInitiale,
-    double (*cout1)(const S & solution), const S (* changementAleatoire)(const S & solution), double (*succ)(const double & temperature))
-{
-SolutionCout<S>  solutionCourante(solutionInitiale, cout1);
-SolutionCout<S> bestSolution(solutionCourante);
-double t; // température courante
+                                    double (*cout1)(const S & solution), const S (* changementAleatoire)(const S & solution), double (*succ)(const double & temperature)){
 
-for ( t = tInitiale; t > tFinale; t = succ(t))
-    {
-    int nombreTentatives, nombreSucces;
+    SolutionCout<S>  solutionCourante(solutionInitiale, cout1);
+    SolutionCout<S> bestSolution(solutionCourante);
+    double t; // température courante
 
-    for (nombreTentatives = nombreSucces = 0; nombreTentatives < nombreTentativesMax && nombreSucces < nombreSuccesMax; ++nombreTentatives)
-        {
+    for ( t = tInitiale; t > tFinale; t = succ(t)){
+        int nombreTentatives, nombreSucces;
 
-        SolutionCout<S> solutionPrecedente(solutionCourante);
-        solutionCourante = solutionCourante.change(changementAleatoire,cout1);
-                                                                                                        //cout<< "solution courante = " << solutionCourante << endl;
-        if (solutionCourante.cout < solutionPrecedente.cout)  // la solution courante est meilleure que la solution précédente
-           {
-           ++nombreSucces;
-           if (solutionCourante.cout < bestSolution.cout)	// la solution courante est meilleure que la meilleure solution trouvée jusqu'à présent
-              bestSolution = solutionCourante;
-           }
-        else	// coûtCourant >= coûtPrécédent. La solution courante n'est pas meilleure que la solution précédente
-           {
-           double v = tirageAleatoire(0,1);
-           double deltaCout = solutionCourante.cout - solutionPrecedente.cout; // on a deltaCout >= 0
-           double metropolis = exp(-K*deltaCout/t);
+        for (nombreTentatives = nombreSucces = 0; nombreTentatives < nombreTentativesMax && nombreSucces < nombreSuccesMax; ++nombreTentatives){
 
-           if (v < metropolis) ++ nombreSucces;		// la solution courante est acceptée bien que moins bonne que la précédente
+            SolutionCout<S> solutionPrecedente(solutionCourante);
+            solutionCourante = solutionCourante.change(changementAleatoire,cout1);
+                                                                                                            //cout<< "solution courante = " << solutionCourante << endl;
+            if (solutionCourante.cout < solutionPrecedente.cout)  // la solution courante est meilleure que la solution précédente
+               {
+               ++nombreSucces;
+               if (solutionCourante.cout < bestSolution.cout)	// la solution courante est meilleure que la meilleure solution trouvée jusqu'à présent
+                  bestSolution = solutionCourante;
+               }
+            else	// coûtCourant >= coûtPrécédent. La solution courante n'est pas meilleure que la solution précédente
+               {
+               double v = tirageAleatoire(0,1);
+               double deltaCout = solutionCourante.cout - solutionPrecedente.cout; // on a deltaCout >= 0
+               double metropolis = exp(-K*deltaCout/t);
 
-           else
-              solutionCourante = solutionPrecedente;	// la solution courante est refusée
+               if (v < metropolis) ++ nombreSucces;		// la solution courante est acceptée bien que moins bonne que la précédente
 
-           }	// coûtCourant >= coûtPrécédent.
+               else
+                  solutionCourante = solutionPrecedente;	// la solution courante est refusée
 
-        }	 // for, boucle tentatives d'améliorations
+               }	// coûtCourant >= coûtPrécédent.
 
-    if (nombreSucces == 0) return bestSolution;		// l'algorithme est stationnaire : il a atteint un minimum, on arrête tout et on retourne la meilleure solution trouvée
+            }	 // for, boucle tentatives d'améliorations
 
-    }	// for, boucle température
+        if (nombreSucces == 0) return bestSolution;		// l'algorithme est stationnaire : il a atteint un minimum, on arrête tout et on retourne la meilleure solution trouvée
 
-return bestSolution;
+        }	// for, boucle température
+
+    return bestSolution;
 }
 
 

@@ -11,7 +11,7 @@
 
 #include <iostream>
 #include <string>
-#include <math.h>
+#include <cmath>
 
 using namespace std;
 
@@ -41,7 +41,7 @@ public:
 
 };
 
-inline double max(double a, double b) { return (a > b) ? a : b; };
+inline double max(double a, double b) { return (a > b) ? a : b; }
 
 inline const Vecteur2D operator *(const double & a, const Vecteur2D & u) { return u*a;}
 
@@ -96,8 +96,7 @@ return *this;
 /**
  * calcule |u|_sup, c-à-d max(|x|,|y|)
  * */
-inline double normeSup(const Vecteur2D& u)
-{
+inline double normeSup(const Vecteur2D& u){
 return max(abs(u.x),abs(u.y));
 }
 

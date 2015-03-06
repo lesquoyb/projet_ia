@@ -42,8 +42,6 @@ int test_gelement(){
 
     cout << "g = " << g << endl;
 
-
-    char ch ; cin >> ch;
     return 0;
 }
 

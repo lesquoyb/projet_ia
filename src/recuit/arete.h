@@ -10,14 +10,17 @@ On ne connait pas la nature de v à ce niveau (v pourrait contenir une couleur, 
 T est la nature de l'information portée par un sommet et
 S est la nature de l'information portée par une arête
 */
+#include "gelement.h"
 
-template <class S, class T>
+
+template <class ArcCost, class VertexType>
 class Arete : public GElement {
+
 public:
-	Sommet <T> *debut, *fin;
-	S v;
+    Sommet <VertexType> *debut, *fin;
+    ArcCost v;
 	
-	Arete(int clef, Sommet<T> * debut, Sommet<T> * fin, const S & v):
+    Arete(int clef, Sommet<VertexType> * debut, Sommet<VertexType> * fin, const ArcCost & v):
 		GElement(clef),debut(debut),fin(fin),v(v){}
 
 	operator string () const;
@@ -30,7 +33,7 @@ public:
      * RESULTATS : true si *this s'appuie sur s1 et s2 c'est-à-dire si (début == s1 et fin == s2) ou (début == s2 et fin == s1), false sinon
      *
      * */
-    bool estEgal( const Sommet<T> * s1, const Sommet<T> * s2) const;
+    bool estEgal( const Sommet<VertexType> * s1, const Sommet<VertexType> * s2) const;
 
 };
 

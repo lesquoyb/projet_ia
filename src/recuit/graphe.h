@@ -5,14 +5,60 @@
 #include "arete.h"
 
 
-template <class S, class T>
+template <class ArcCost, class VertexType>
 class Graphe {
+
+
 protected:
 	int prochaineClef;
 
 public:
-	PElement< Arete<S,T> > * lAretes; // liste d'arêtes
-	PElement< Sommet<T> > * lSommets; // liste de sommets
+
+
+    class CycleEuclidien{
+
+    public:
+
+        PElement< Arete<ArcCost,VertexType> > arcsList;
+
+        static double cout(const CycleEuclidien *c){
+            double total = 0;
+            for(PElement< Arete<ArcCost,VertexType> >* i = c->arcsList; i != NULL ; i = i->suivant){
+                total+= i->valeur->v;
+            }
+            return total;
+        }
+
+        void insert(const Arete<ArcCost,VertexType> * arcsList ){
+            arcsList = new PElement<Arete<ArcCost,VertexType> >(arete,arcsList);
+        }
+
+        static CycleEuclidien* changement(const CycleEuclidien *c){
+            /*TODO*/
+        }
+
+    };
+
+
+    PElement< Arete<ArcCost,VertexType> > * lAretes; // liste d'arêtes
+    PElement< Sommet<VertexType> > * lSommets; // liste de sommets
+
+
+
+    CycleEuclidien getFirstCycle()const{
+        /* TODO achtung graphe avec un élément */
+        CycleEuclidien c;
+        Sommet<VertexType>* last = lAretes->valeur;
+        for(PElement< Sommet<VertexType> >* sommet = lSommets->suivant ; sommet !=NULL ; sommet = sommet->suivant){
+            if(sommet->suivant == NULL){
+                c.insert(lAretes->valeur->clef);
+                /*TODO */
+             //   c.arcsList = new PElement<
+
+            }
+
+        }
+    }
 
 	/**
 	 * crée un graphe vide
@@ -22,12 +68,12 @@ public:
 	/**
 	 * constructeur de copie obligatoire car la classe comporte une partie dynamique
 	 * */
-	Graphe(const Graphe<S,T> & graphe);
+    Graphe(const Graphe<ArcCost,VertexType> & graphe);
 
 	/**
 	 * opérateur = obligatoire car la classe comporte une partie dynamique
 	 * */
-	const Graphe<S,T> & operator = (const Graphe<S,T> & graphe);
+    const Graphe<ArcCost,VertexType> & operator = (const Graphe<ArcCost,VertexType> & graphe);
 
 	/**
 	 * destructeur obligatoire car la classe comporte une partie dynamique
@@ -40,20 +86,20 @@ public:
 	/**
 	 * crée un sommet isolé
 	 * */
-	Sommet<T> * creeSommet(const T & info);
+    Sommet<VertexType> * creeSommet(const VertexType & info);
 
 	/**
 	 * crée une arête joignant les 2 sommets debut et fin
 	 *
 	 * * met à jour les champs degré de debut et de fin
 	 * */
-	Arete<S,T> * creeArete( Sommet<T> * debut, Sommet<T> * fin, const S & info);
+    Arete<ArcCost,VertexType> * creeArete( Sommet<VertexType> * debut, Sommet<VertexType> * fin, const ArcCost & info);
 
 	/**
 	recherche la liste des paires (voisin, arête) adjacentes de sommet dans le graphe
 	*/
-	PElement< pair< Sommet<T> *, Arete<S,T>* > >  *
-	adjacences(const Sommet<T> * sommet) const;
+    PElement< pair< Sommet<VertexType> *, Arete<ArcCost,VertexType>* > >  *
+    adjacences(const Sommet<VertexType> * sommet) const;
 	operator string() const;
 
 	/**
@@ -63,7 +109,7 @@ public:
 	 * RESULTATS : l'arête s'appuyant sur s1 et s2 si elle existe, NULL sinon
 	 *
 	 * */
-	Arete<S,T> * getAreteParSommets( const Sommet<T> * s1, const Sommet<T> * s2) const;
+    Arete<ArcCost,VertexType> * getAreteParSommets( const Sommet<VertexType> * s1, const Sommet<VertexType> * s2) const;
 
 
 };
@@ -172,9 +218,9 @@ template <class S, class T>
 Arete<S,T> * Graphe<S,T>::getAreteParSommets( const Sommet<T> * s1, const Sommet<T> * s2) const{
     PElement<Arete<S,T> > * l;
 
-    for ( l = this->lAretes; l; l = l->s)
-        if ( l->v->estEgal(s1,s2))
-           return l->v;
+    for ( l = this->lAretes; l; l = l->suivant)
+        if ( l->valeur->estEgal(s1,s2))
+           return l->valeur;
 
     return NULL;
 }
@@ -188,16 +234,16 @@ PElement< pair< Sommet<T> *, Arete<S,T>* > >  *  Graphe<S,T>::adjacences(const S
     const PElement< Arete<S,T> > * l;
     PElement< pair< Sommet<T> *, Arete<S,T>* > > * r;
 
-    for ( l = lAretes, r = NULL; l; l = l->s)
+    for ( l = lAretes, r = NULL; l; l = l->suivant)
 
-        if ( sommet == l->v->debut)
+        if ( sommet == l->valeur->debut)
             r = new PElement< pair< Sommet<T> *, Arete<S,T>* > >
-            ( new pair< Sommet<T> *, Arete<S,T>* >(l->v->fin,l->v),r);
+            ( new pair< Sommet<T> *, Arete<S,T>* >(l->valeur->fin,l->valeur),r);
         else
-            if ( sommet == l->v->fin)
+            if ( sommet == l->valeur->fin)
                r = new PElement< pair< Sommet<T> *, Arete<S,T>* > >
                ( new pair< Sommet<T> *, Arete<S,T>* >
-                (l->v->debut,l->v),r);
+                (l->valeur->debut,l->valeur),r);
     return r;
 }
 

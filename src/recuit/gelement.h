@@ -23,6 +23,7 @@ En effet tout élément d'un graphe est défini par une clef (c-à-d une valeur 
 class GElement{
 
 public:
+
     int clef;
 
     GElement(const int clef);

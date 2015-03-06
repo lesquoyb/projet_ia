@@ -34,46 +34,42 @@ return f1(solution);
 sinusoïde amortie
 
 */
-inline double cout2(const double & solution) // le minimum est -5 atteint en 0
-{
-return f2(solution);
+inline double cout2(const double & solution){ // le minimum est -5 atteint en 0
+    return f2(solution);
 }
 
-//int main()
-int test_recuit_simule_d1()
-{
-char ch;
 
-srand (time(NULL));		// initialisation du générateur de nombres pseudo-aléatoires
+int test_recuit_simule_d1(){
 
-double  tInitiale = 1000;		// température initiale : affectation telle que deltaCoutMax/tInitiale  ~= 0
-double  tFinale = 0;			// température finale : affectation arbitraire telle que température finale <= température initiale
-int nombreTentativesMax = 50;	// arbitraire : nombre max de tentatives par palier de température
-int nombreSuccesMax = 25;		// arbitraire : nombre max de succès par palier de température
-//double solutionInitiale = -rand() +	rand(); // tirage d'un nombre réel quelconque
-double solutionInitiale = tirageAleatoire(-10,10); // tirage d'un nombre réel quelconque
 
-double meilleureSolution1;
-double coutMeilleureSolution1;
+    srand (time(NULL));		// initialisation du générateur de nombres pseudo-aléatoires
 
-//const S recuitSimule(const double & tInitiale, const double & tFinale, const int nombreTentativesMax, const int nombreSuccesMax, const S & solutionInitiale,
-//	double (*cout)(const S & solution), const S (* changementAleatoire)(const S & solution), double (*succ)(const double & temperature))
+    double  tInitiale = 1000;		// température initiale : affectation telle que deltaCoutMax/tInitiale  ~= 0
+    double  tFinale = 0;			// température finale : affectation arbitraire telle que température finale <= température initiale
+    int nombreTentativesMax = 50;	// arbitraire : nombre max de tentatives par palier de température
+    int nombreSuccesMax = 25;		// arbitraire : nombre max de succès par palier de température
+    //double solutionInitiale = -rand() +	rand(); // tirage d'un nombre réel quelconque
+    double solutionInitiale = tirageAleatoire(-10,10); // tirage d'un nombre réel quelconque
 
-cout << "recherche du minimum d'une fonction à une variable par la méthode du recuit simulé" << endl;
-cin >> ch;
-meilleureSolution1 = recuitSimule1( tInitiale, tFinale, nombreTentativesMax, nombreSuccesMax, solutionInitiale,
-    cout2, changementAleatoire, succ, coutMeilleureSolution1);
+    double meilleureSolution1;
+    double coutMeilleureSolution1;
 
-cout << "le minimum de la fonction est trouvé en : " << meilleureSolution1 <<", le minimum vaut : "<< coutMeilleureSolution1 << endl;
-cin >> ch;
+    //const S recuitSimule(const double & tInitiale, const double & tFinale, const int nombreTentativesMax, const int nombreSuccesMax, const S & solutionInitiale,
+    //	double (*cout)(const S & solution), const S (* changementAleatoire)(const S & solution), double (*succ)(const double & temperature))
 
-SolutionCout<double> meilleureSolution2 = recuitSimule( tInitiale, tFinale, nombreTentativesMax, nombreSuccesMax, solutionInitiale,
-    cout2, changementAleatoire, succ);
+    cout << "recherche du minimum d'une fonction à une variable par la méthode du recuit simulé" << endl;
+    meilleureSolution1 = recuitSimule1( tInitiale, tFinale, nombreTentativesMax, nombreSuccesMax, solutionInitiale,
+        cout2, changementAleatoire, succ, coutMeilleureSolution1);
 
-cout << "meilleure solution et son coût : " << meilleureSolution2 << endl;
+    cout << "le minimum de la fonction est trouvé en : " << meilleureSolution1 <<", le minimum vaut : "<< coutMeilleureSolution1 << endl;
 
- cin >> ch;
-return 0;
+
+    SolutionCout<double> meilleureSolution2 = recuitSimule( tInitiale, tFinale, nombreTentativesMax, nombreSuccesMax, solutionInitiale,
+        cout2, changementAleatoire, succ);
+
+    cout << "meilleure solution et son coût : " << meilleureSolution2 << endl;
+
+    return 0;
 }
 
 
