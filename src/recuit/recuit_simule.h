@@ -14,6 +14,7 @@ Mise en oeuvre générique de l'algorithme du recuit simulé
 #include <string>
 #include <sstream>
 #include <iostream>
+#include "graphe.h"
 
 using namespace std;
 #define K 1	// constante pour le test de Métropolis, telle que K > 0
@@ -90,22 +91,42 @@ for ( t = tInitiale, bestSolution = solutionCourante = solutionInitiale, coutBes
            double deltaCout = coutCourant - coutPrecedent; // on a deltaCout >= 0
            double metropolis = exp(-K*deltaCout/t);
 
-           if (v < metropolis) ++ nombreSucces;		// la solution courante est acceptée bien que moins bonne que la précédente
-
+           if (v < metropolis){
+               ++ nombreSucces;		// la solution courante est acceptée bien que moins bonne que la précédente
+           }
            else
               { solutionCourante = solutionPrecedente; coutCourant = coutPrecedent;}	// la solution courante est refusée
-
-           }	// coûtCourant >= coûtPrécédent.
-
-        }	 // for, boucle tentatives d'améliorations
-
+           }
+        }
     if (nombreSucces == 0) return bestSolution;		// l'algorithme est stationnaire : il a atteint un minimum, on arrête tout et on retourne la meilleure solution trouvée
 
-    }	// for, boucle température
+    }
 
 return bestSolution;
 }
 
+bool always_true(){return true;}
+
+/**
+ *Si le graphe n'est pas complet, rajoute les arcs infini.
+ */
+template<class S,class T>
+PElement<T> graphe_complet(const Graphe<S,T> &graphe){
+    for(PElement<T> sommet = graphe.lSommets ; sommet != NULL; sommet = sommet.suivant){
+        if( ! PElement::appartient(sommet.valeur, graphe.lAretes)){
+            PElement::insertionOrdonnee();
+        }
+
+    }
+}
+
+/**
+ *Crée le premier cycle eulerien du graphe.
+ */
+template<class S,class T>
+Graphe<S,T> solutionInitiale(const Graphe<S,T> &g){
+
+}
 
 /**
 pour optimiser le temps de calcul, il vaut mieux économiser les appels à la fct cout(). Aussi il vaut mieux stocker les coûts calculés.

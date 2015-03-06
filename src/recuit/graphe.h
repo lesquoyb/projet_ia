@@ -195,4 +195,4 @@ PElement< pair< Sommet<T> *, Arete<S,T>* > >  *  Graphe<S,T>::adjacences(const S
 }
 
 
-#endif // GRAPHE
+#endif // GRAPHE 

@@ -22,15 +22,15 @@ public:
 
 	operator string () const;
 
-/**
- * vérifie si *this s'appuie sur s1 et s2
- *
- * DONNEES : *this, s1, s2
- *
- * RESULTATS : true si *this s'appuie sur s1 et s2 c'est-à-dire si (début == s1 et fin == s2) ou (début == s2 et fin == s1), false sinon
- *
- * */
-bool estEgal( const Sommet<T> * s1, const Sommet<T> * s2) const;
+    /**
+     * vérifie si *this s'appuie sur s1 et s2
+     *
+     * DONNEES : *this, s1, s2
+     *
+     * RESULTATS : true si *this s'appuie sur s1 et s2 c'est-à-dire si (début == s1 et fin == s2) ou (début == s2 et fin == s1), false sinon
+     *
+     * */
+    bool estEgal( const Sommet<T> * s1, const Sommet<T> * s2) const;
 
 };
 
