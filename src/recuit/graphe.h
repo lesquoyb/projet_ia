@@ -47,8 +47,8 @@ public:
 
 	CycleEuclidien getFirstCycle()const{
 		/* TODO achtung graphe avec un élément */
-		CycleEuclidien c;
-		Sommet<VertexType>* last = lAretes->valeur;
+        CycleEuclidien c;
+        Sommet<VertexType>* last = lAretes->valeur;
 		for (PElement< Sommet<VertexType> >* sommet = lSommets->suivant; sommet != NULL; sommet = sommet->suivant){
 			if (sommet->suivant == NULL){
 				c.insert(lAretes->valeur->clef);
