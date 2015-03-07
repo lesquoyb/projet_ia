@@ -250,13 +250,6 @@ void Graphe<S, ValueData>::toFile(string filename, string titre, string legende,
 
 
 
-
-/**
- * Ajoute les arc infini reliant le sommet aux autres de lSommets qui ne sont pas dans lAretes
- * @brief add_missing_arcs
- * @param sommet
- * @param lAretes
- */
 template<class ArcCost,class VertexType>
 void Graphe<ArcCost,VertexType>::add_missing_arcs(const ArcCost &infini){
 
