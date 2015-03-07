@@ -262,8 +262,8 @@ void Graphe<ArcCost,VertexType>::add_missing_arcs(const ArcCost &infini){
 
     for(PElement<Sommet<VertexType> >* p = lSommets; p != NULL ; p = p->suivant){
         for(PElement<Sommet<VertexType> >* q = p; q != NULL; q = q->suivant){
-            Arete<ArcCost,VertexType> a = new Arete<ArcCost,VertexType>(prochaineClef,p,q,infini);
-            if( ! containsArc(a) ){
+            Arete<ArcCost,VertexType>* a =new  Arete<ArcCost,VertexType>(prochaineClef,p->valeur,q->valeur,infini);
+            if( ! containsArc(*a) ){
                 lAretes = new PElement<Arete<ArcCost,VertexType> >(a,lAretes);
                 prochaineClef++;
             }
@@ -277,8 +277,8 @@ void Graphe<ArcCost,VertexType>::add_missing_arcs(const ArcCost &infini){
 
 template<class ArcCost,class VertexType>
 bool Graphe<ArcCost,VertexType>::containsArc(const Arete<ArcCost,VertexType> &a){
-    for(PElement<Arete<double,VertexType> >* ia = lAretes; ia != NULL ; ia = ia->suivant){
-        if(ia->valeur->estEgal(a)){
+    for(PElement<Arete<ArcCost,VertexType> >* ia = lAretes; ia != NULL ; ia = ia->suivant){
+        if(ia->valeur->estEgal(a.debut,a.fin)){
             return true;
         }
     }

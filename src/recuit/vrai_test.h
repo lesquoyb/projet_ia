@@ -35,7 +35,6 @@ const Graphe<double,string>::CycleEulerien changement_aleatoire(const Graphe<dou
 
 void vrai_test(){
 
-    cout << "lololo" <<endl;
     double temp_init = 50;
     double temp_final = 0;
     int nb_max_iteration = 100;
@@ -53,8 +52,8 @@ void vrai_test(){
         }
     }
 
-    /* TODO */
-    //graphe.complet();
+
+    graphe.add_missing_arcs(DBL_MAX); // On rend le graphe complet
     Graphe<double,string>::CycleEulerien solutionInitiale = graphe.getFirstCycle();
     cout << "graphe: " << graphe <<endl;
 
