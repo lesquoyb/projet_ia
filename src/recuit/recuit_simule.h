@@ -108,74 +108,39 @@ const S recuitSimule1(const double & tInitiale, const double & tFinale, const in
 
 
 /**
- *Si le graphe n'est pas complet, rajoute les arcs infini.
- */
-template<class VertexType,class ArcCost>
-PElement<VertexType> graphe_complet(const Graphe<ArcCost,VertexType> &graphe){
-
-    int nbArete = PElement< Arete<ArcCost,VertexType> >::taille(graphe.lAretes);
-    for(PElement<VertexType> sommet = graphe.lSommets ; sommet != NULL; nbArete = PElement<VertexType>::taille(graphe.lAretes), sommet = sommet.suivant){
-        cout << "nb aretes: " << nbArete;
-        if( ! PElement< Arete<ArcCost,VertexType>  >::appartient(sommet.valeur, graphe.lAretes)){
-            add_missing_arcs(sommet.valeur,graphe.lAretes);
-        }
-
-    }
-}
-
-/**
- * Ajoute les arc infini reliant le sommet aux autres de lSommets qui ne sont pas dans lAretes
- * @brief add_missing_arcs
- * @param sommet
- * @param lAretes
- */
-template<class VertexType,class ArcCost>
-void add_missing_arcs(Sommet<VertexType> sommet,PElement< Arete<ArcCost,VertexType> > lAretes){
-
-}
-
-/**
- *Crée le premier cycle eulerien du graphe.
- */
-template<class S,class T>
-Graphe<S,T> solutionInitiale(const Graphe<S,T> &g){
-
-}
-
-/**
 pour optimiser le temps de calcul, il vaut mieux économiser les appels à la fct cout(). Aussi il vaut mieux stocker les coûts calculés.
 
 Le plus simple est d'alors associer une solution particulière et son coût. C'est le but de cette classe
 
 */
-template <class S>
+template <class SolutionType>
 class SolutionCout {
 
 public:
 
-    S solution;
+    SolutionType solution;
     double cout; // cout de solution
 
-    SolutionCout( const S & solution, double (*cout1)( const S & solution)):solution(solution), cout(cout1(solution)) {}
+    SolutionCout( const SolutionType & solution, double (*cout1)( const SolutionType & solution)):solution(solution), cout(cout1(solution)) {}
 
-    const SolutionCout<S> change( const S (*changementAleatoire) (const S & solution), double (*cout1) (const S & solution)) const;
+    const SolutionCout<SolutionType> change( const SolutionType (*changementAleatoire) (const SolutionType & solution), double (*cout1) (const SolutionType & solution)) const;
 
     operator string() const;
 
 };
 
-template <class S>
-ostream & operator << (ostream & os, const SolutionCout<S> & solutionCout){
+template <class SolutionType>
+ostream & operator << (ostream & os, const SolutionCout<SolutionType> & solutionCout){
     return os << (string)solutionCout;
 }
 
-template <class S>
-const SolutionCout<S> SolutionCout<S>::change( const S (*changementAleatoire) (const S & solution), double (*cout1) (const S & solution)) const{
-    return SolutionCout<S>(changementAleatoire(this->solution), cout1);
+template <class SolutionType>
+const SolutionCout<SolutionType> SolutionCout<SolutionType>::change( const SolutionType (*changementAleatoire) (const SolutionType & solution), double (*cout1) (const SolutionType & solution)) const{
+    return SolutionCout<SolutionType>(changementAleatoire(this->solution), cout1);
 }
 
-template <class S>
-SolutionCout<S>::operator string() const{
+template <class SolutionType>
+SolutionCout<SolutionType>::operator string() const{
     ostringstream oss;
 
     oss << "( " << solution <<", " << cout << ")";
@@ -188,12 +153,12 @@ SolutionCout<S>::operator string() const{
 Dans cette version, une solution et son coût associé sont associés dans un objet SolutionCout
 
 */
-template <class S>
-const SolutionCout<S> recuitSimule(const double & tInitiale, const double & tFinale, const int nombreTentativesMax, const int nombreSuccesMax, const S & solutionInitiale,
-                                    double (*cout1)(const S & solution), const S (* changementAleatoire)(const S & solution), double (*succ)(const double & temperature)){
+template <class SolutionType>
+const SolutionCout<SolutionType> recuitSimule(const double & tInitiale, const double & tFinale, const int nombreTentativesMax, const int nombreSuccesMax, const SolutionType & solutionInitiale,
+                                    double (*cout1)(const SolutionType & solution), const SolutionType (* changementAleatoire)(const SolutionType & solution), double (*succ)(const double & temperature)){
 
-    SolutionCout<S>  solutionCourante(solutionInitiale, cout1);
-    SolutionCout<S> bestSolution(solutionCourante);
+    SolutionCout<SolutionType>  solutionCourante(solutionInitiale, cout1);
+    SolutionCout<SolutionType> bestSolution(solutionCourante);
     double t; // température courante
 
     for ( t = tInitiale; t > tFinale; t = succ(t)){
@@ -201,7 +166,7 @@ const SolutionCout<S> recuitSimule(const double & tInitiale, const double & tFin
 
         for (nombreTentatives = nombreSucces = 0; nombreTentatives < nombreTentativesMax && nombreSucces < nombreSuccesMax; ++nombreTentatives){
 
-            SolutionCout<S> solutionPrecedente(solutionCourante);
+            SolutionCout<SolutionType> solutionPrecedente(solutionCourante);
             solutionCourante = solutionCourante.change(changementAleatoire,cout1);
           // cout<< "solution courante = " << solutionCourante.solution << endl;
             if (solutionCourante.cout < solutionPrecedente.cout){

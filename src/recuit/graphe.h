@@ -73,6 +73,19 @@ public:
 	int nombreSommets() const;
 	int nombreAretes() const;
 
+    /**
+     * Crée les arcs manquant pour faire un graphe complet, les arcs manquants sont initialisé représentant l'infini dans le type du poids des aretes
+     * @brief add_missing_arcs
+     */
+    void add_missing_arcs(const ArcCost &infini);
+
+    /**
+     * @brief containsArc renvoie vrai si l'arete est dans la liste d'aretes du graphe
+     * @param a
+     * @return
+     */
+    bool containsArc(const Arete<ArcCost,VertexType> &a);
+
 	/**
 	* crée un sommet isolé
 	* */
@@ -233,6 +246,51 @@ void Graphe<S, ValueData>::toFile(string filename, string titre, string legende,
         }
         fichier.close();
     } else cerr << "Impossible d'ouvrir le fichier !" << endl;
+}
+
+
+
+
+/**
+ * Ajoute les arc infini reliant le sommet aux autres de lSommets qui ne sont pas dans lAretes
+ * @brief add_missing_arcs
+ * @param sommet
+ * @param lAretes
+ */
+template<class ArcCost,class VertexType>
+void Graphe<ArcCost,VertexType>::add_missing_arcs(const ArcCost &infini){
+
+    for(PElement<Sommet<VertexType> >* p = lSommets; p != NULL ; p = p->suivant){
+        for(PElement<Sommet<VertexType> >* q = p; q != NULL; q = q->suivant){
+            Arete<ArcCost,VertexType> a = new Arete<ArcCost,VertexType>(prochaineClef,p,q,infini);
+            if( ! containsArc(a) ){
+                lAretes = new PElement<Arete<ArcCost,VertexType> >(a,lAretes);
+                prochaineClef++;
+            }
+            else{
+                delete a;
+            }
+
+        }
+    }
+}
+
+template<class ArcCost,class VertexType>
+bool Graphe<ArcCost,VertexType>::containsArc(const Arete<ArcCost,VertexType> &a){
+    for(PElement<Arete<double,VertexType> >* ia = lAretes; ia != NULL ; ia = ia->suivant){
+        if(ia->valeur->estEgal(a)){
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
+ *Crée le premier cycle eulerien du graphe choisi aléatoirement
+ */
+template<class ArcCost,class VertexType>
+Graphe<ArcCost,VertexType> solutionInitiale(const Graphe<ArcCost,VertexType> &g){
+    /*TODO: choisir aléatoirement */
 }
 
 

@@ -47,6 +47,9 @@ public :
     }
 
 
+    /* TODO maybe cet algo est utilisé pour voir si cet élément précis appartient à une liste, auquel cas il ne faut pas comparer les
+     *  valeurs mais directement le pointeur
+     */
     static bool appartient(const T * element,const PElement<T> * list){
         if(list == NULL){
             return false;
