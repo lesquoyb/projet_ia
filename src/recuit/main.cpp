@@ -21,6 +21,7 @@ int main()
     //vrai_test();
 
     // Partie Mattew
+
     ValueData *vA = new ValueData("A", Vecteur2D(1,1)), *vB = new ValueData("B", Vecteur2D(2,2)),
             *vC = new ValueData("C", Vecteur2D(3,2)), *vD = new ValueData("D", Vecteur2D(4,1)),
             *vE = new ValueData("E", Vecteur2D(3,0));
@@ -59,7 +60,8 @@ int main()
         cout << "( " << temp->valeur->fin->valeur.position.x << ", " << temp->valeur->fin->valeur.position.y << ")" << endl;
         temp = temp->suivant;
     }
+    //graphe.toFile("recuit", "Recuit Simule", "Résultat du recuit simule", "plop");
 
-    return 0;
+
 }
 

@@ -1,4 +1,5 @@
 #include "valuedata.h"
+#include <sstream>
 
 ValueData::operator string() const {
     ostringstream oss;

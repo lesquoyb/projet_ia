@@ -1,0 +1,38 @@
+titre = 3 courbes simples bricolées
+legende = un carré, un triangle et un M. Couleurs acceptées : black, blue, red, green, yellow, cyan
+resume = le carré est rouge, le triangle est vert et le M est bleu
+type de scene = courbes
+coin bas gauche de la figure sur l'écran en coordonnées monde = (-2.5,-2.5)
+coin haut droit de la figure sur l'écran en coordonnées monde = (2.5,2.5)
+nombre de points remarquables = 10
+black (0,0) o
+black (1,0)1
+black (2,0)2 
+black(0,1)  1
+black(0,2) 2
+black (-1,0) -1
+black(-2,0) -2
+black(0,-1) -1
+black(0,-2) -2
+red (1,1) il fait froid
+nombre de courbes = 3
+couleur =  red
+nombre de points = 5
+( 1.5,   1.5)
+( -1.5,  1.5)
+( -1.5, -1.5)
+( 1.5,  -1.5)
+( 1.5,   1.5)
+couleur =  green
+nombre de points = 4
+(  0.5,  1)
+( -0.5,  1)
+(    0, -1)
+(  0.5,  1)
+couleur =  blue
+nombre de points = 5
+( 1.5,  0)
+( 0.8, 1.5)
+( 0, 0.8)
+( -0.8, 1.5)
+( -1.5,  0)
