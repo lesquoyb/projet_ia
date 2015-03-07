@@ -36,6 +36,8 @@ public:
      * */
     bool estEgal( const Sommet<VertexType> * s1, const Sommet<VertexType> * s2) const;
 
+    bool estEgal(const Arete<ArcCost,VertexType> &a) const;
+
 };
 
 template <class S, class T>
@@ -56,6 +58,11 @@ ostream & operator << (ostream & os, const Arete<S,T> & arete) { return os << (s
 template <class S, class T>
 bool Arete<S,T>::estEgal( const Sommet<T> * s1, const Sommet<T> * s2) const { 
 	return (s1 == debut && s2 == fin) || (s1 == fin && s2 == debut);
+}
+
+template <class ArcCost, class VertexType>
+bool Arete<ArcCost,VertexType>::estEgal(const Arete<ArcCost,VertexType> &a) const{
+    return estEgal(a.debut,a.fin);
 }
 
 #endif // ARETE

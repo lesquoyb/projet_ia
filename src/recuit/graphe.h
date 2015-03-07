@@ -27,6 +27,64 @@ public:
         }
 
 
+        static CycleEulerien changement_aleatoire(const CycleEulerien &c){
+            /* TODO attention il ne faut surtout pas modifier le cycle d'entrée, il y aura donc certainement
+             * des choses à revoir dans cet algo */
+            Arete<ArcCost,VertexType>* first = randomArc(c);
+            Arete<ArcCost,VertexType>* second = randomArc(c);
+            /*TODO vérif */
+            while(   second->fin->clef    ==  first->debut->clef
+                  or second->fin->clef    ==  first->fin->clef
+                  or second->debut->clef  ==  first->fin->clef
+                  or second->debut->clef  ==  first->debut->clef){
+
+                second = randomArc(c);
+            }
+            //On viens de tirer deux arcs au hasard qui ne sont ni égaux ni un à la suite de l'autre
+
+            //On change A->C et B->D en A->B et B->D
+            Sommet<VertexType>* C = first->fin;
+            first->fin = second->debut;
+
+            //On trouve le chemin de B vers C
+            PElement<Arete<ArcCost,VertexType> > cheminBC = return_path(c.lAretes,second->debut,C); //TODO
+            //On l'inverse
+            invert_path(cheminBC);
+
+            //On change A->B et B->D en A->B et C->D
+            second->fin = C;
+
+
+
+        }
+
+        static PElement< Arete<ArcCost, VertexType> >* invert_path(const PElement< Arete<ArcCost, VertexType> >* p){
+            /*TODO*/
+        }
+
+        /**
+         * @brief return_path un sous ensemble de la liste d'arc passé en paramètre
+         * @param arcsList
+         * @param from
+         * @param to
+         * @return
+         */
+        static PElement< Arete<ArcCost, VertexType> >* return_path(const PElement< Arete<ArcCost, VertexType> >* arcsList,const Sommet<VertexType>* from,const Sommet<VertexType>* to){
+            // Arete<ArcCost, VertexType> > tmp = from->;
+            /* TODO */
+        }
+
+        static Arete<ArcCost,VertexType>* randomArc(const CycleEulerien &c){
+            int nbIte = random() * PElement<Arete<ArcCost, VertexType> >::taille(c.arcsList);
+            PElement<Arete<ArcCost, VertexType> >* ret = c.arcsList;
+            for( int i = 0; i <nbIte ;ret = ret->suivant);
+            if(ret == NULL){
+                throw Exception("Huston on a un problème");
+            }
+            return ret;
+        }
+
+
 
     };
 
@@ -38,6 +96,7 @@ public:
 
     CycleEulerien getFirstCycle()const{
         /* TODO achtung graphe avec un élément */
+        /* TODO: en fait ça doit être random donc v'la */
         CycleEulerien c;
         //Sommet<VertexType>* last = lSommets->valeur;
 		for (PElement< Sommet<VertexType> >* sommet = lSommets->suivant; sommet != NULL; sommet = sommet->suivant){

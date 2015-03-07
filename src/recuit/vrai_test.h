@@ -28,9 +28,7 @@ double cout_cycle(const Graphe<double,string>::CycleEulerien &c){
 
 
 const Graphe<double,string>::CycleEulerien changement_aleatoire(const Graphe<double,string>::CycleEulerien &c){
-    /*TODO*/
-
-    return c;
+    return Graphe<double,string>::CycleEulerien::changement_aleatoire(c) ;
 }
 
 void vrai_test(){
