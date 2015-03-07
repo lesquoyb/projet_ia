@@ -5,7 +5,8 @@ CONFIG -= qt
 
 SOURCES += main.cpp \
     gelement.cpp \
-    vector2d.cpp
+    vector2d.cpp \
+    valuedata.cpp
 
 include(deployment.pri)
 qtcAddDeployment()
@@ -27,5 +28,6 @@ HEADERS += \
     test_recuit_simule_d1.h \
     test_recuit_simule_d2.h \
     recuit_simule_d2.h \
-    vrai_test.h
+    vrai_test.h \
+    valuedata.h
 
