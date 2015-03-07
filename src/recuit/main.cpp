@@ -44,14 +44,14 @@ int main()
     cout << "coin bas gauche de la figure sur l'écran en coordonnées monde = ( -1, -1)" << endl;
     cout << "coin haut droit de la figure sur l'écran en coordonnées monde = ( 10, 10)" << endl;
     cout << "nombre de points remarquables =" << graphe.nombreSommets() << endl;
-    PElement<Sommet<ValueData>> *tempsom = graphe.lSommets;
+    PElement<Sommet<ValueData> > *tempsom = graphe.lSommets;
     while (tempsom != NULL) {
         cout << "point remarquable = 2 black (" << tempsom->valeur->valeur.position.x << "," << tempsom->valeur->valeur.position.x << ") " << tempsom->valeur->valeur.nom << endl;
         tempsom = tempsom->suivant;
     }
 
     cout << "nombre de courbes = " << graphe.nombreAretes() << endl;
-    PElement<Arete<double,ValueData>> *temp = graphe.lAretes;
+    PElement<Arete<double,ValueData> > *temp = graphe.lAretes;
     while (temp != NULL) {
         cout << "couleur =  green" << endl;
         cout << "nombre de points = 2" << endl;
