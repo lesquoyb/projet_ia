@@ -203,27 +203,28 @@ const SolutionCout<S> recuitSimule(const double & tInitiale, const double & tFin
 
             SolutionCout<S> solutionPrecedente(solutionCourante);
             solutionCourante = solutionCourante.change(changementAleatoire,cout1);
-                                                                                                            //cout<< "solution courante = " << solutionCourante << endl;
-            if (solutionCourante.cout < solutionPrecedente.cout)  // la solution courante est meilleure que la solution précédente
-               {
+          // cout<< "solution courante = " << solutionCourante.solution << endl;
+            if (solutionCourante.cout < solutionPrecedente.cout){
+               // la solution courante est meilleure que la solution précédente
                ++nombreSucces;
-               if (solutionCourante.cout < bestSolution.cout)	// la solution courante est meilleure que la meilleure solution trouvée jusqu'à présent
-                  bestSolution = solutionCourante;
-               }
-            else	// coûtCourant >= coûtPrécédent. La solution courante n'est pas meilleure que la solution précédente
-               {
+               if (solutionCourante.cout < bestSolution.cout){	// la solution courante est meilleure que la meilleure solution trouvée jusqu'à présent
+                   bestSolution = solutionCourante;
+                }
+            }
+            else{
+               // coûtCourant >= coûtPrécédent. La solution courante n'est pas meilleure que la solution précédente
                double v = tirageAleatoire(0,1);
                double deltaCout = solutionCourante.cout - solutionPrecedente.cout; // on a deltaCout >= 0
                double metropolis = exp(-K*deltaCout/t);
 
-               if (v < metropolis) ++ nombreSucces;		// la solution courante est acceptée bien que moins bonne que la précédente
-
-               else
+               if (v < metropolis){
+                   ++ nombreSucces;		// la solution courante est acceptée bien que moins bonne que la précédente
+               }
+               else{
                   solutionCourante = solutionPrecedente;	// la solution courante est refusée
-
-               }	// coûtCourant >= coûtPrécédent.
-
-            }	 // for, boucle tentatives d'améliorations
+               }
+            }
+        }	 // for, boucle tentatives d'améliorations
 
         if (nombreSucces == 0) return bestSolution;		// l'algorithme est stationnaire : il a atteint un minimum, on arrête tout et on retourne la meilleure solution trouvée
 

@@ -26,6 +26,7 @@ public:
         }
 
 
+
     };
 
 
@@ -165,6 +166,8 @@ Graphe<S, T>::operator string() const{
 	oss << ")";
 	return oss.str();
 }
+
+
 
 template <class S, class T>
 ostream & operator<<(ostream & os, const Graphe<S, T> & graphe) {

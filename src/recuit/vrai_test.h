@@ -36,9 +36,9 @@ const Graphe<double,string>::CycleEulerien changement(const Graphe<double,string
 void vrai_test(){
 
     cout << "lololo" <<endl;
-    double temp_init = 0;
+    double temp_init = 50;
     double temp_final = 0;
-    int nb_max_iteration = 10;
+    int nb_max_iteration = 100;
     int nb_max_succes = 10;
     Graphe<double,string> graphe;
     graphe.creeSommet("A");
@@ -48,7 +48,7 @@ void vrai_test(){
     graphe.creeSommet("E");
 
     for( PElement<Sommet<string> >* i = graphe.lSommets ;  i != NULL ; i = i->suivant ){
-        for(PElement<Sommet<string> >* j = graphe.lSommets ;  j != NULL ; i = j->suivant){
+        for(PElement<Sommet<string> >* j = graphe.lSommets ;  j != NULL ; j = j->suivant){
             graphe.creeArete(i->valeur,j->valeur,50*rand());
         }
     }
