@@ -203,7 +203,7 @@ const SolutionCout<S> recuitSimule(const double & tInitiale, const double & tFin
 
             SolutionCout<S> solutionPrecedente(solutionCourante);
             solutionCourante = solutionCourante.change(changementAleatoire,cout1);
-           //cout<< "solution courante = " << solutionCourante << endl;
+          // cout<< "solution courante = " << solutionCourante.solution << endl;
             if (solutionCourante.cout < solutionPrecedente.cout){
                // la solution courante est meilleure que la solution précédente
                ++nombreSucces;

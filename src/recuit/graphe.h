@@ -25,10 +25,6 @@ public:
             arcsList = new PElement<Arete<ArcCost, VertexType> >(arete, arcsList);
         }
 
-        ostream& operator <<(ostream& stream){
-            stream << arcsList;
-            return stream;
-        }
 
 
     };
@@ -170,6 +166,8 @@ Graphe<S, T>::operator string() const{
 	oss << ")";
 	return oss.str();
 }
+
+
 
 template <class S, class T>
 ostream & operator<<(ostream & os, const Graphe<S, T> & graphe) {
