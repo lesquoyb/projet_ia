@@ -40,7 +40,9 @@ int main() {
         }
     }
 
-    graphe.ServeurSend();
+    //Graphe<double,ValueData> graphe2 = graphe.solutionInitiale();
+
+    //graphe2.ServeurSend();
     //graphe.toFile("recuit", "Recuit Simule", "Résultat du recuit simule", "plop");
 
 

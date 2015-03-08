@@ -142,13 +142,16 @@ public:
 
 	Sommet<VertexType> * creeSommet(const VertexType & info);
 
+    Graphe<ArcCost,VertexType> solutionInitiale();
+
 
 	/**
 	* crée une arête joignant les 2 sommets debut et fin
 	*
 	* * met à jour les champs degré de debut et de fin
 	* */
-	Arete<ArcCost, VertexType> * creeArete(Sommet<VertexType> * debut, Sommet<VertexType> * fin, const ArcCost & info);
+    Arete<ArcCost, VertexType> * creeArete(Sommet<VertexType> * debut, Sommet<VertexType> * fin, const ArcCost & info);
+    Arete<ArcCost, VertexType> * creeArete(Arete<ArcCost, VertexType> *arete);
 
 	/**
 	recherche la liste des paires (voisin, arête) adjacentes de sommet dans le graphe
@@ -198,17 +201,24 @@ Sommet<T> * Graphe<S, T>::creeSommet(const T & info) {
 
 template <class S, class T>
 Arete<S, T> * Graphe<S, T>::creeArete(Sommet<T> * debut, Sommet<T> * fin, const S & info) {
-	Arete<S, T> * nouvelleArete;
+    Arete<S, T> * nouvelleArete;
 
-	// ici tester que les 2 sommets sont bien existants dans le graphe
-	if (!PElement< Sommet<T> >::appartient(debut, lSommets)) throw Exception("début d'arête non défini");
-	if (!PElement< Sommet<T> >::appartient(fin, lSommets)) throw Exception("fin d'arête non définie");
+    // ici tester que les 2 sommets sont bien existants dans le graphe
+    if (!PElement< Sommet<T> >::appartient(debut, lSommets)) throw Exception("début d'arête non défini");
+    if (!PElement< Sommet<T> >::appartient(fin, lSommets)) throw Exception("fin d'arête non définie");
 
-	nouvelleArete = new Arete<S, T>(prochaineClef++, debut, fin, info);
-	lAretes = new PElement< Arete<S, T> >(nouvelleArete, lAretes);
-	debut->degre++; fin->degre++;
-	return nouvelleArete;
+    nouvelleArete = new Arete<S, T>(prochaineClef++, debut, fin, info);
+    lAretes = new PElement< Arete<S, T> >(nouvelleArete, lAretes);
+    debut->degre++; fin->degre++;
+    return nouvelleArete;
 }
+
+template <class S, class T>
+Arete<S, T> * Graphe<S, T>::creeArete(Arete<S, T> *arete) {
+    lAretes = new PElement< Arete<S, T> >(arete, lAretes);
+    return arete;
+}
+
 
 template <class S, class T>
 int Graphe<S, T>::nombreSommets() const{
@@ -361,8 +371,19 @@ bool Graphe<ArcCost,VertexType>::containsArc(const Arete<ArcCost,VertexType> &a)
  *Crée le premier cycle eulerien du graphe choisi aléatoirement
  */
 template<class ArcCost,class VertexType>
-Graphe<ArcCost,VertexType> solutionInitiale(const Graphe<ArcCost,VertexType> &g){
+Graphe<ArcCost,VertexType> solutionInitiale(){
     /*TODO: choisir aléatoirement */
+    /*Graphe<double,VertexType> graphe;
+    PElement<Sommet<VertexType> >* last = NULL;
+    for( PElement<Sommet<VertexType> >* i = g.lSommets ;  i != NULL ; i = i->suivant ){
+        graphe.creeSommet(new VertexType(i));
+        if (last != NULL) {
+            graphe.creeArete( g.getAreteParSommets(last, i));
+        }
+    }
+    graphe.creeArete( g.getAreteParSommets(last, g.lSommets));
+
+    return graphe;*/
 }
 
 
