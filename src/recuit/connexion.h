@@ -15,6 +15,7 @@
     typedef int SOCKET;
     typedef struct sockaddr_in SOCKADDR_IN;
     typedef struct sockaddr SOCKADDR;
+    #define _strdup strdup
 #else
     #include <winsock2.h>
     #pragma comment(lib, "ws2_32.lib") // sp�cifique � VISUAL C++
@@ -30,7 +31,7 @@
 #include <vector>
 #include "exception.h"
 
-#pragma comment(lib, "ws2_32.lib") // spécifique à VISUAL C++
+
 using namespace std;
 
 class Connexion {

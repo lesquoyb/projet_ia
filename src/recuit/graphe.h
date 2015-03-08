@@ -1,9 +1,12 @@
 #ifndef GRAPHE
 #define GRAPHE
 #include "pelement.h"
+#include "connexion.h"
 #include "sommet.h"
 #include "arete.h"
 #include <fstream>
+#include <iostream>
+#include <string>
 
 
 template <class ArcCost, class VertexType>
@@ -320,7 +323,7 @@ void Graphe<S, ValueData>::ServeurSend() {
         double x2 = 2*temp->valeur->fin->valeur.position.x;
         double y1 = 2*temp->valeur->debut->valeur.position.y;
         double y2 = 2*temp->valeur->fin->valeur.position.y;
-        Connexion::commit("s{" + to_string(x1) + "," + to_string(y1) + "," + to_string(x2) + "," + to_string(y2) + ",#222222}");
+        Connexion::commit("s{" + std::to_string(x1) + "," + std::to_string(y1) + "," + std::to_string(x2) + "," + std::to_string(y2) + ",#222222}");
 
         temp = temp->suivant;
     }
@@ -371,19 +374,19 @@ bool Graphe<ArcCost,VertexType>::containsArc(const Arete<ArcCost,VertexType> &a)
  *Crée le premier cycle eulerien du graphe choisi aléatoirement
  */
 template<class ArcCost,class VertexType>
-Graphe<ArcCost,VertexType> solutionInitiale(){
+Graphe<ArcCost,VertexType> Graphe<ArcCost,VertexType>::solutionInitiale(){
     /*TODO: choisir aléatoirement */
-    /*Graphe<double,VertexType> graphe;
+    Graphe<ArcCost,VertexType> graphe;
     PElement<Sommet<VertexType> >* last = NULL;
-    for( PElement<Sommet<VertexType> >* i = g.lSommets ;  i != NULL ; i = i->suivant ){
+    for( PElement<Sommet<VertexType> >* i = graphe.lSommets ;  i != NULL ; i = i->suivant ){
         graphe.creeSommet(new VertexType(i));
         if (last != NULL) {
-            graphe.creeArete( g.getAreteParSommets(last, i));
+            graphe.creeArete( graphe.getAreteParSommets(last, i));
         }
     }
-    graphe.creeArete( g.getAreteParSommets(last, g.lSommets));
+    graphe.creeArete( graphe.getAreteParSommets(last, graphe.lSommets));
 
-    return graphe;*/
+    return graphe;
 }
 
 

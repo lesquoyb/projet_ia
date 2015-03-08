@@ -40,9 +40,9 @@ int main() {
         }
     }
 
-    //Graphe<double,ValueData> graphe2 = graphe.solutionInitiale();
+    Graphe<double,ValueData> graphe2 = graphe.solutionInitiale();
 
-    //graphe2.ServeurSend();
+    graphe2.ServeurSend();
     //graphe.toFile("recuit", "Recuit Simule", "Résultat du recuit simule", "plop");
 
 

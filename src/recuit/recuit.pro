@@ -7,8 +7,7 @@ SOURCES += main.cpp \
     gelement.cpp \
     valuedata.cpp \
     vector2d.cpp \
-    connection.cpp \
-    erreur.cpp
+    connexion.cpp
 
 include(deployment.pri)
 qtcAddDeployment()
@@ -16,7 +15,6 @@ qtcAddDeployment()
 HEADERS += \
     algebre_lineaire.h \
     arete.h \
-    connection.h \
     exception.h \
     gelement.h \
     graphe.h \
@@ -33,5 +31,5 @@ HEADERS += \
     valuedata.h \
     vector2d.h \
     vrai_test.h \
-    erreur.h
+    connexion.h
 
