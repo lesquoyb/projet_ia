@@ -55,7 +55,7 @@ void vrai_test(){
     Graphe<double,string>::CycleEulerien solutionInitiale = graphe.getFirstCycle();
     cout << "graphe: " << graphe <<endl;
 
-    SolutionCout< Graphe<double,string>::CycleEulerien > solution = recuitSimule(temp_init, temp_final, nb_max_iteration, nb_max_succes, solutionInitiale, &cout_cycle, &changement_aleatoire, &decrement);
+    SolutionCout< Graphe<double,string>::CycleEulerien > solution = recuitSimule(temp_init, temp_final, nb_max_iteration, nb_max_succes, solutionInitiale, &cout_cycle,&changement_aleatoire, &decrement);
 
     cout << "cout de la solution: " << solution.cout << endl;
     cout << "meilleur chemin: " << solution.solution.arcsList << endl;

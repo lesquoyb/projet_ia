@@ -22,23 +22,37 @@ public:
 
         PElement< Arete<ArcCost, VertexType> >* arcsList;
 
-        void insert(const Arete<ArcCost, VertexType> * arete){
-            arcsList = new PElement<Arete<ArcCost, VertexType> >(arete, arcsList);
+        void insert(const Arete<ArcCost, VertexType> & arete){
+            arcsList = new PElement<Arete<ArcCost, VertexType> >(new Arete<ArcCost,VertexType>(arete), arcsList);
         }
 
+
+        CycleEulerien():arcsList(NULL){}
+
+        CycleEulerien(const CycleEulerien &c){
+            for(PElement< Arete<ArcCost, VertexType> >* p = c.arcsList; p != NULL ; p = p->suivant){
+                arcsList = new PElement< Arete<ArcCost, VertexType> >(p->valeur,arcsList);
+            }
+        }
+
+
+        CycleEulerien operator =(const CycleEulerien &c){
+            return CycleEulerien(c);
+        }
 
         static CycleEulerien changement_aleatoire(const CycleEulerien &cycle){
             /* TODO attention il ne faut surtout pas modifier le cycle d'entrée, il y aura donc certainement
              * des choses à revoir dans cet algo */
-            Arete<ArcCost,VertexType>* first = randomArc(cycle);
-            Arete<ArcCost,VertexType>* second = randomArc(cycle);
+            CycleEulerien ret = cycle;
+            Arete<ArcCost,VertexType>* first = ret.arcsList->randomElement();
+            Arete<ArcCost,VertexType>* second = ret.arcsList->randomElement();
             /*TODO vérif */
             while(   second->fin->clef    ==  first->debut->clef
                   or second->fin->clef    ==  first->fin->clef
                   or second->debut->clef  ==  first->fin->clef
                   or second->debut->clef  ==  first->debut->clef){
 
-                second = randomArc(cycle);
+                second = ret.arcsList->randomElement();
             }
             //On viens de tirer deux arcs au hasard qui ne sont ni égaux ni un à la suite de l'autre
 
@@ -46,44 +60,44 @@ public:
             Sommet<VertexType>* C = first->fin;
             first->fin = second->debut;
 
-            //On trouve le chemin de B vers C
-            PElement<Arete<ArcCost,VertexType> >* cheminBC = return_path(cycle.arcsList,second->debut,C); //TODO
-            //On l'inverse
-            invert_path(cheminBC);
+            //On trouve le chemin de B vers C et on l'inverse
+            invert_path(cycle.arcsList,*second->debut,*C);
 
             //On change A->B et B->D en A->B et C->D
             second->fin = C;
-
-
-
+            return ret;
         }
 
-        static PElement< Arete<ArcCost, VertexType> >* invert_path(const PElement< Arete<ArcCost, VertexType> >* p){
-            /*TODO*/
+
+        /**
+         * comme on est dans un cycle, pas de detection des boucles et autres, on avance juste jusqu'a arrivé au point voulu.
+         * @brief invert_path un sous ensemble de la liste d'arc passé en paramètre
+         * @param arcsList
+         * @param from
+         * @param to
+         * @return
+         */
+        static void invert_path(PElement< Arete<ArcCost, VertexType> >* iterator,const Sommet<VertexType> &from,const Sommet<VertexType> &to){
+            //On atteind le point from
+            for(; iterator->valeur->debut->clef == from.clef ; iterator = iterator->suivant);
+            //On inverse tous les arcs jusqu'a ce qu'on tombe sur l'arc qui fini en to
+            Sommet<VertexType>* tmp;
+            do{
+                tmp = iterator->valeur->debut;
+                iterator->valeur->debut = iterator->valeur->fin;
+                iterator->valeur->fin = tmp;
+            }while(iterator->valeur->debut->clef != to.clef);
         }
 
         /**
+         * comme on est dans un cycle, pas de detection des boucles et autres, on avance juste jusqu'a arrivé au point voulu.
          * @brief return_path un sous ensemble de la liste d'arc passé en paramètre
          * @param arcsList
          * @param from
          * @param to
          * @return
          */
-        static PElement< Arete<ArcCost, VertexType> >* return_path(const PElement< Arete<ArcCost, VertexType> >* arcsList,const Sommet<VertexType>* from,const Sommet<VertexType>* to){
-            // Arete<ArcCost, VertexType> > tmp = from->;
-            /* TODO */
 
-        }
-
-        static Arete<ArcCost,VertexType>* randomArc(const CycleEulerien &c){
-            int nbIte = random() * PElement<Arete<ArcCost, VertexType> >::taille(c.arcsList);
-            PElement<Arete<ArcCost, VertexType> >* ret = c.arcsList;
-            for( int i = 0; i <nbIte ;ret = ret->suivant);
-            if(ret == NULL){
-                throw Exception("Huston on a un problème");
-            }
-            return ret->valeur;
-        }
 
 
 
@@ -97,59 +111,37 @@ public:
 
     CycleEulerien getFirstCycle()const{
         /* TODO achtung graphe avec un élément */
-        /* TODO: en fait ça doit être random donc v'la */
+        /* TODO vérif que ça sort bien un cycle hamiltonien */
         CycleEulerien c;
-        //Sommet<VertexType>* last = lSommets->valeur;
-		for (PElement< Sommet<VertexType> >* sommet = lSommets->suivant; sommet != NULL; sommet = sommet->suivant){
-			if (sommet->suivant == NULL){
-                //si suivant est null on fait l'arrête sommet -> last
-                //c.insert();
-				/*TODO */
-				//   c.arcsList = new PElement<
-
-			}
-
+        for (int i = 0; i < PElement<Sommet<VertexType> >::taille(lSommets); i++){
+                Arete<ArcCost, VertexType>* arete;
+                //TODO: améliorable avec une seconde liste représentant les disponibles
+                do{
+                    arete = lAretes->randomElement();
+                }
+                while(  PElement<Arete<ArcCost, VertexType> >::appartient(arete,c.arcsList ));
+                c.insert(*arete);
 		}
         return c;
 	}
 
 	Graphe();
-
-	/**
-	* constructeur de copie obligatoire car la classe comporte une partie dynamique
-	* */
 	Graphe(const Graphe<ArcCost, VertexType> & graphe);
 
-	/**
-	* opérateur = obligatoire car la classe comporte une partie dynamique
-	* */
+
 	const Graphe<ArcCost, VertexType> & operator = (const Graphe<ArcCost, VertexType> & graphe);
 
-	/**
-	* destructeur obligatoire car la classe comporte une partie dynamique
-	* */
 	~Graphe();
 
 	int nombreSommets() const;
 	int nombreAretes() const;
 
-    /**
-     * Crée les arcs manquant pour faire un graphe complet, les arcs manquants sont initialisé représentant l'infini dans le type du poids des aretes
-     * @brief add_missing_arcs
-     */
     void add_missing_arcs(const ArcCost &infini);
 
-    /**
-     * @brief containsArc renvoie vrai si l'arete est dans la liste d'aretes du graphe
-     * @param a
-     * @return
-     */
     bool containsArc(const Arete<ArcCost,VertexType> &a);
 
-	/**
-	* crée un sommet isolé
-	* */
 	Sommet<VertexType> * creeSommet(const VertexType & info);
+
 
 	/**
 	* crée une arête joignant les 2 sommets debut et fin

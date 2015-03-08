@@ -46,6 +46,16 @@ public :
           return 1 + PElement<T>::taille(l->suivant);
     }
 
+    T* randomElement()const{
+        int nbIte = random() * PElement<T>::taille(this);
+        const PElement<T>* ret = this;
+        for( int i = 0; i <nbIte ;ret = ret->suivant);
+        if(ret == NULL){
+            throw Exception("Huston on a un problème");
+        }
+        return ret->valeur;
+    }
+
 
     /* TODO maybe cet algo est utilisé pour voir si cet élément précis appartient à une liste, auquel cas il ne faut pas comparer les
      *  valeurs mais directement le pointeur
@@ -126,6 +136,9 @@ public :
               return PElement<T>::retire(a,l->suivant);
     }
 
+
+
+
     /**
      * retire l'élément situé en tête de l et le renvoie. Le 1er maillon de l est effacé.
      *
@@ -142,6 +155,15 @@ public :
         l = l->suivant; delete tete;
         return a;
     }
+
+
+    PElement<T> operator = (const PElement<T> &l){
+        /* TODO: tester */
+        PElement<T> ret;
+        for(PElement<T>* it = &l; it != NULL; ret = PElement(*it,ret),it = it->suivant);
+        return ret;
+    }
+
 };
 
 

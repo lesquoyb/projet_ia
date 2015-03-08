@@ -18,7 +18,7 @@ int main()
     cout << endl << endl <<endl << "Test du vrai recuit simulé " << endl;
 
     // Partie BaPeuhtiste
-    //vrai_test();
+    vrai_test();
 
     // Partie Mattew
     /*
