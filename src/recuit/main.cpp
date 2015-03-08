@@ -5,7 +5,7 @@
 #include "test_recuit_simule_d2.h"
 //#include "vrai_test.h"
 #include "valuedata.h"
-#include "connection.h"
+#include "connexion.h"
 
 using namespace std;
 
