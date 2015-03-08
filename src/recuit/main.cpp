@@ -3,7 +3,7 @@
 #include "test_gelement.h"
 #include "vector2d.h"
 #include "test_recuit_simule_d2.h"
-//#include "vrai_test.h"
+#include "vrai_test.h"
 #include "valuedata.h"
 #include "connection.h"
 
@@ -19,7 +19,7 @@ int main()
 
 
     // Partie BaPeuhtiste
-    vrai_test();
+    //vrai_test();
 
     // Partie Mattew
 
@@ -33,7 +33,6 @@ int main()
     graphe.creeSommet(*vD);
     graphe.creeSommet(*vE);
 
-    PElement<Arete<double,ValueData> > *temp = graphe.lAretes;
 
     for( PElement<Sommet<ValueData> >* i = graphe.lSommets ;  i != NULL ; i = i->suivant ){
         for(PElement<Sommet<ValueData> >* j = graphe.lSommets ;  j != NULL ; j = j->suivant){
@@ -42,15 +41,19 @@ int main()
     }
 
     Connection::linkServer("192.168.56.1");
-    Connection::commit("s{2,1,3,2,#222222}");
-    Connection::push();
 
     PElement<Arete<double,ValueData> > *temp = graphe.lAretes;
     while (temp != NULL) {
-        Connection::commit("s{" + temp->valeur->debut->valeur.position.x + "," + temp->valeur->debut->valeur.position.y + "," +
-                           temp->valeur->fin->valeur.position.x + "," + temp->valeur->fin->valeur.position.y + ",#222222}";
+        double x1 = 2*temp->valeur->debut->valeur.position.x;
+        double x2 = 2*temp->valeur->fin->valeur.position.x;
+        double y1 = 2*temp->valeur->debut->valeur.position.y;
+        double y2 = 2*temp->valeur->fin->valeur.position.y;
+        Connection::commit("s{" + to_string(x1) + "," + to_string(y1) + "," + to_string(x2) + "," + to_string(y2) + ",#222222}");
+        Connection::commit("p{" + to_string(x1) + "," + to_string(y1) + ",#3399FF}");
+        Connection::commit("p{" + to_string(x2) + "," + to_string(y2) + ",#3399FF}");
         temp = temp->suivant;
     }
+    Connection::commit("t{bonjour,0,0,#000000}");
     Connection::push();
 
 

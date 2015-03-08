@@ -187,6 +187,7 @@ release\main.obj: ..\recuit\main.cpp ..\recuit\testpelement.h \
 		..\recuit\tools_math.h \
 		..\recuit\recuit_simule_d2.h \
 		..\recuit\recuit_simule_d1.h \
+		..\recuit\vrai_test.h \
 		..\recuit\valuedata.h \
 		..\recuit\connection.h \
 		..\recuit\Erreur.h
