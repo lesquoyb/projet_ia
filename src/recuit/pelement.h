@@ -47,7 +47,7 @@ public :
     }
 
     T* randomElement()const{
-        int nbIte = random() * PElement<T>::taille(this);
+        int nbIte = rand() * PElement<T>::taille(this);
         const PElement<T>* ret = this;
         for( int i = 0; i <nbIte ;ret = ret->suivant);
         if(ret == NULL){
