@@ -1,3 +1,5 @@
 src/recuit/recuit.pro.user
 src/recuit/vrai_test.h
 src/recuit/vrai_test.h
+*.pri
+*.autosave
