@@ -19,7 +19,7 @@ void Connexion::linkServer(char adresseServeur[200]) {
         if (Connexion::sock == INVALID_SOCKET) {
             ostringstream oss;
             oss << "la création du socket a échoué : code d'erreur = " << WSAGetLastError() << endl;	// pour les valeurs renvoyées par WSAGetLastError() : cf. doc réf winsock
-            throw Erreur(oss.str().c_str());
+            throw Exception(oss.str().c_str());
         }
 
         SOCKADDR_IN sockaddr;
@@ -28,7 +28,7 @@ void Connexion::linkServer(char adresseServeur[200]) {
         sockaddr.sin_addr.s_addr = inet_addr(adresseServeur);
         sockaddr.sin_port = htons(portServeur);
 
-        if (connect(Connexion::sock, (SOCKADDR *)&sockaddr, sizeof(sockaddr)) == SOCKET_ERROR) { throw Erreur("La connexion a échoué"); }
+        if (connect(Connexion::sock, (SOCKADDR *)&sockaddr, sizeof(sockaddr)) == SOCKET_ERROR) { throw Exception("La connexion a échoué"); }
         Connexion::is_connected = true;
 
         cout << "connexion réussie "<< endl;
@@ -57,7 +57,7 @@ void Connexion::unlinkServer() {
 string Connexion::get() {
     if (Connexion::is_connected) {
         char reponse[200];
-        if (recv(Connexion::sock, reponse, 200, 0) == SOCKET_ERROR) { throw Erreur("La réception de la réponse a échoué"); }
+        if (recv(Connexion::sock, reponse, 200, 0) == SOCKET_ERROR) { throw Exception("La réception de la réponse a échoué"); }
         else {
             char* p = strstr(reponse, "\\END\\");
             *p = '\0';
@@ -79,7 +79,7 @@ void Connexion::push() {
         query.clear();
         cout << temp;
         char* queries = _strdup(temp.c_str());
-        if (send(Connexion::sock, queries, strlen(queries), 0) == SOCKET_ERROR) { throw Erreur("échec de l'envoi de la requête"); }
+        if (send(Connexion::sock, queries, strlen(queries), 0) == SOCKET_ERROR) { throw Exception("échec de l'envoi de la requête"); }
     } else {
         cout << "La connexion n'est pas établie" << endl;
     }

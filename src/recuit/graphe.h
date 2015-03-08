@@ -48,9 +48,9 @@ public:
             Arete<ArcCost,VertexType>* second = ret.arcsList->randomElement();
             /*TODO vérif */
             while(   second->fin->clef    ==  first->debut->clef
-                  or second->fin->clef    ==  first->fin->clef
-                  or second->debut->clef  ==  first->fin->clef
-                  or second->debut->clef  ==  first->debut->clef){
+                  || second->fin->clef    ==  first->fin->clef
+                  || second->debut->clef  ==  first->fin->clef
+                  || second->debut->clef  ==  first->debut->clef){
 
                 second = ret.arcsList->randomElement();
             }

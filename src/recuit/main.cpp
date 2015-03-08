@@ -5,7 +5,7 @@
 #include "test_recuit_simule_d2.h"
 #include "vrai_test.h"
 #include "valuedata.h"
-#include "connection.h"
+#include "connexion.h"
 
 using namespace std;
 
@@ -40,7 +40,7 @@ int main()
         }
     }
 
-    Connection::linkServer("192.168.56.1");
+    Connexion::linkServer("192.168.56.1");
 
     PElement<Arete<double,ValueData> > *temp = graphe.lAretes;
     while (temp != NULL) {
@@ -48,13 +48,13 @@ int main()
         double x2 = 2*temp->valeur->fin->valeur.position.x;
         double y1 = 2*temp->valeur->debut->valeur.position.y;
         double y2 = 2*temp->valeur->fin->valeur.position.y;
-        Connection::commit("s{" + to_string(x1) + "," + to_string(y1) + "," + to_string(x2) + "," + to_string(y2) + ",#222222}");
-        Connection::commit("p{" + to_string(x1) + "," + to_string(y1) + ",#3399FF}");
-        Connection::commit("p{" + to_string(x2) + "," + to_string(y2) + ",#3399FF}");
+        Connexion::commit("s{" + to_string(x1) + "," + to_string(y1) + "," + to_string(x2) + "," + to_string(y2) + ",#222222}");
+        Connexion::commit("p{" + to_string(x1) + "," + to_string(y1) + ",#3399FF}");
+        Connexion::commit("p{" + to_string(x2) + "," + to_string(y2) + ",#3399FF}");
         temp = temp->suivant;
     }
-    Connection::commit("t{bonjour,0,0,#000000}");
-    Connection::push();
+    Connexion::commit("t{bonjour,0,0,#000000}");
+    Connexion::push();
 
 
     //graphe.toFile("recuit", "Recuit Simule", "Résultat du recuit simule", "plop");
