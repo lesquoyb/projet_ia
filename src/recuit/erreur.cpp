@@ -4,7 +4,7 @@ using namespace std;
 #include <string.h>
 #include <iostream>
 #include <string>
-#include "Erreur.h"
+#include "erreur.h"
 
 
 Erreur::Erreur()
