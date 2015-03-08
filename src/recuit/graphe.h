@@ -167,6 +167,7 @@ public:
 	Arete<ArcCost, VertexType> * getAreteParSommets(const Sommet<VertexType> * s1, const Sommet<VertexType> * s2) const;
 
     void toFile(string filename, string titre, string legende, string resume);
+    void ServeurSend();
 };
 
 template <class S, class T>
@@ -301,6 +302,32 @@ void Graphe<S, ValueData>::toFile(string filename, string titre, string legende,
 }
 
 
+template <class S, class ValueData>
+void Graphe<S, ValueData>::ServeurSend() {
+    PElement<Arete<double,ValueData> > *temp = lAretes;
+    while (temp != NULL) {
+        double x1 = 2*temp->valeur->debut->valeur.position.x;
+        double x2 = 2*temp->valeur->fin->valeur.position.x;
+        double y1 = 2*temp->valeur->debut->valeur.position.y;
+        double y2 = 2*temp->valeur->fin->valeur.position.y;
+        Connexion::commit("s{" + to_string(x1) + "," + to_string(y1) + "," + to_string(x2) + "," + to_string(y2) + ",#222222}");
+
+        temp = temp->suivant;
+    }
+
+    PElement<Sommet<ValueData> > *tempS = lSommets;
+    while (tempS != NULL) {
+        double x = 2*tempS->valeur->valeur.position.x;
+        double y = 2*tempS->valeur->valeur.position.y;
+        string nom = tempS->valeur->valeur.nom;
+
+        Connexion::commit("t{" + nom + "," + to_string(x) + "," + to_string(y) + ",#222222}");
+        Connexion::commit("p{" + to_string(x) + "," + to_string(y) + ",#3399FF}");
+        tempS = tempS->suivant;
+    }
+
+    Connexion::push();
+}
 
 template<class ArcCost,class VertexType>
 void Graphe<ArcCost,VertexType>::add_missing_arcs(const ArcCost &infini){
