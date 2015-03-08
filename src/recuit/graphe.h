@@ -27,18 +27,18 @@ public:
         }
 
 
-        static CycleEulerien changement_aleatoire(const CycleEulerien &c){
+        static CycleEulerien changement_aleatoire(const CycleEulerien &cycle){
             /* TODO attention il ne faut surtout pas modifier le cycle d'entrée, il y aura donc certainement
              * des choses à revoir dans cet algo */
-            Arete<ArcCost,VertexType>* first = randomArc(c);
-            Arete<ArcCost,VertexType>* second = randomArc(c);
+            Arete<ArcCost,VertexType>* first = randomArc(cycle);
+            Arete<ArcCost,VertexType>* second = randomArc(cycle);
             /*TODO vérif */
             while(   second->fin->clef    ==  first->debut->clef
                   or second->fin->clef    ==  first->fin->clef
                   or second->debut->clef  ==  first->fin->clef
                   or second->debut->clef  ==  first->debut->clef){
 
-                second = randomArc(c);
+                second = randomArc(cycle);
             }
             //On viens de tirer deux arcs au hasard qui ne sont ni égaux ni un à la suite de l'autre
 
@@ -47,7 +47,7 @@ public:
             first->fin = second->debut;
 
             //On trouve le chemin de B vers C
-            PElement<Arete<ArcCost,VertexType> > cheminBC = return_path(c.lAretes,second->debut,C); //TODO
+            PElement<Arete<ArcCost,VertexType> >* cheminBC = return_path(cycle.arcsList,second->debut,C); //TODO
             //On l'inverse
             invert_path(cheminBC);
 
@@ -72,6 +72,7 @@ public:
         static PElement< Arete<ArcCost, VertexType> >* return_path(const PElement< Arete<ArcCost, VertexType> >* arcsList,const Sommet<VertexType>* from,const Sommet<VertexType>* to){
             // Arete<ArcCost, VertexType> > tmp = from->;
             /* TODO */
+
         }
 
         static Arete<ArcCost,VertexType>* randomArc(const CycleEulerien &c){
@@ -81,7 +82,7 @@ public:
             if(ret == NULL){
                 throw Exception("Huston on a un problème");
             }
-            return ret;
+            return ret->valeur;
         }
 
 

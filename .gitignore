@@ -1,3 +1,4 @@
-src/recuit/recuit.pro.user
-src/recuit/vrai_test.h
-src/recuit/vrai_test.h
+src/recuit/recuit.pro*
+src/recuit/build*
+src/recuit/recuit/a.out
+src/recuit/recuit/deployment.pri
