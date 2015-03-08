@@ -6,7 +6,6 @@
 #include "vrai_test.h"
 #include "valuedata.h"
 
-
 using namespace std;
 
 int main()
