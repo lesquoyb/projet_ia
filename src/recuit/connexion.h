@@ -1,17 +1,39 @@
 #ifndef CONNECTION
 #define CONNECTION
-#include <winsock2.h>
+#ifdef __unix__
+    #include <sys/types.h>
+    #include <sys/socket.h>
+    #include <netinet/in.h>
+    #include <arpa/inet.h>
+    #include <unistd.h>
+    #include <errno.h>
+    #define INVALID_SOCKET -1
+    #define SOCKET_ERROR -1
+    #define WSAGetLastError() errno
+    #define SD_BOTH 2
+    #define closesocket(s) close(s)
+    typedef int SOCKET;
+    typedef struct sockaddr_in SOCKADDR_IN;
+    typedef struct sockaddr SOCKADDR;
+#else
+    #include <winsock2.h>
+    #pragma comment(lib, "ws2_32.lib") // sp�cifique � VISUAL C++
+    #if (_MSC_VER == 1800)
+        #define strdup _strdup
+    #endif
+#endif
+
 #include <iostream>
 #include <sstream>
 #include <string>
 #include <string.h>
 #include <vector>
-#include "Erreur.h"
+#include "exception.h"
 
 #pragma comment(lib, "ws2_32.lib") // spécifique à VISUAL C++
 using namespace std;
 
-class Connection {
+class Connexion {
 public:
     static void linkServer(char[200]);
     static void unlinkServer();
@@ -24,8 +46,8 @@ public:
     static const char separator = ';';
 
 private:
-    Connection();
-    ~Connection();
+    Connexion();
+    ~Connexion();
 
     static SOCKET sock;
     static bool is_connected;

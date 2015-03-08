@@ -1,20 +1,22 @@
-#include "Connection.h"
-bool Connection::is_connected = false;
-SOCKET Connection::sock;
-vector<string> Connection::query;
-string Connection::transmission_end = "_#_";
+#include "connexion.h"
+bool Connexion::is_connected = false;
+SOCKET Connexion::sock;
+vector<string> Connexion::query;
+string Connexion::transmission_end = "_#_";
 
-Connection::Connection() {}
-Connection::~Connection() {}
+Connexion::Connexion() {}
+Connexion::~Connexion() {}
 
 /**Connexion au serveur*/
-void Connection::linkServer(char adresseServeur[200]) {
-    if (!Connection::is_connected) {
-        WSADATA wsaData;
-        if (WSAStartup(MAKEWORD(2, 0), &wsaData)) throw Erreur("L'initialisation a échoué");
-        Connection::sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+void Connexion::linkServer(char adresseServeur[200]) {
+    if (!Connexion::is_connected) {
+        #ifdef WIN32
+                WSADATA wsaData;
+                if (WSAStartup(MAKEWORD(2, 0), &wsaData)) throw Exception("L'initialisation a échoué");
+        #endif
+        Connexion::sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
-        if (Connection::sock == INVALID_SOCKET) {
+        if (Connexion::sock == INVALID_SOCKET) {
             ostringstream oss;
             oss << "la création du socket a échoué : code d'erreur = " << WSAGetLastError() << endl;	// pour les valeurs renvoyées par WSAGetLastError() : cf. doc réf winsock
             throw Erreur(oss.str().c_str());
@@ -26,22 +28,24 @@ void Connection::linkServer(char adresseServeur[200]) {
         sockaddr.sin_addr.s_addr = inet_addr(adresseServeur);
         sockaddr.sin_port = htons(portServeur);
 
-        if (connect(Connection::sock, (SOCKADDR *)&sockaddr, sizeof(sockaddr)) == SOCKET_ERROR) { throw Erreur("La connexion a échoué"); }
-        Connection::is_connected = true;
+        if (connect(Connexion::sock, (SOCKADDR *)&sockaddr, sizeof(sockaddr)) == SOCKET_ERROR) { throw Erreur("La connexion a échoué"); }
+        Connexion::is_connected = true;
 
         cout << "connexion réussie "<< endl;
-        Connection::get();
+        Connexion::get();
     }
     else { cout << "Une connexion est déjà en cours" << endl; }
 }
 
 /**Deconnexion du serveur*/
-void Connection::unlinkServer() {
-    if (Connection::is_connected) {
-        if (shutdown(Connection::sock, SD_BOTH) == SOCKET_ERROR) throw Erreur("la coupure de connexion a échoué");
-        if (closesocket(Connection::sock)) throw Erreur("La fermeture du socket a échoué");
-        WSACleanup();
-        Connection::is_connected = false;
+void Connexion::unlinkServer() {
+    if (Connexion::is_connected) {
+        if (shutdown(Connexion::sock, SD_BOTH) == SOCKET_ERROR) throw Exception("la coupure de connexion a échoué");
+        if (closesocket(Connexion::sock)) throw Exception("La fermeture du socket a échoué");
+        #ifdef WIN32
+            WSACleanup();
+        #endif
+        Connexion::is_connected = false;
 
         cout << "arrêt normal du client" << endl;
     } else {
@@ -50,10 +54,10 @@ void Connection::unlinkServer() {
 }
 
 /**Reception d'un message*/
-string Connection::get() {
-    if (Connection::is_connected) {
+string Connexion::get() {
+    if (Connexion::is_connected) {
         char reponse[200];
-        if (recv(Connection::sock, reponse, 200, 0) == SOCKET_ERROR) { throw Erreur("La réception de la réponse a échoué"); }
+        if (recv(Connexion::sock, reponse, 200, 0) == SOCKET_ERROR) { throw Erreur("La réception de la réponse a échoué"); }
         else {
             char* p = strstr(reponse, "\\END\\");
             *p = '\0';
@@ -67,28 +71,28 @@ string Connection::get() {
 }
 
 /**Envoi de toutes les requetes*/
-void Connection::push() {
-    if (Connection::is_connected) {
+void Connexion::push() {
+    if (Connexion::is_connected) {
         string temp;
-        for (string a_query : query) { temp += a_query + Connection::separator; }
-        temp += Connection::transmission_end + Connection::separator + "\r\n";
+        for (string a_query : query) { temp += a_query + Connexion::separator; }
+        temp += Connexion::transmission_end + Connexion::separator + "\r\n";
         query.clear();
         cout << temp;
         char* queries = _strdup(temp.c_str());
-        if (send(Connection::sock, queries, strlen(queries), 0) == SOCKET_ERROR) { throw Erreur("échec de l'envoi de la requête"); }
+        if (send(Connexion::sock, queries, strlen(queries), 0) == SOCKET_ERROR) { throw Erreur("échec de l'envoi de la requête"); }
     } else {
         cout << "La connexion n'est pas établie" << endl;
     }
 }
 
 /**Enregistrement d'une requete*/
-void Connection::commit(string message, bool push) {
+void Connexion::commit(string message, bool push) {
     query.push_back(message);
-    if (push) Connection::push();
+    if (push) Connexion::push();
 }
 
-void Connection::clear() {
+void Connexion::clear() {
     query.clear();
 }
 
-bool Connection::isConnected() { return is_connected; }
+bool Connexion::isConnected() { return is_connected; }
