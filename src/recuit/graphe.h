@@ -54,7 +54,8 @@ public:
         static CycleEulerien changement_aleatoire(const CycleEulerien &cycle){
             /* TODO attention il ne faut surtout pas modifier le cycle d'entrée, il y aura donc certainement
              * des choses à revoir dans cet algo */
-            CycleEulerien ret = cycle;
+            cout << "cycle entré: " << cycle.arcsList << endl;
+            CycleEulerien ret = CycleEulerien(cycle);
             Arete<ArcCost,VertexType>* first = ret.arcsList->randomElement();
             Arete<ArcCost,VertexType>* second = ret.arcsList->randomElement();
             /*TODO vérif */
@@ -63,7 +64,9 @@ public:
 
                 second = ret.arcsList->randomElement();
             }
-            //On viens de tirer deux arcs au hasard qui ne sont ni égaux ni un à la suite de l'autre
+
+            //On viens de tirer deux arcs au hasard qui ne sont pas l'un à la suite de l'autre
+
 
             //On change A->C et B->D en A->B et B->D
             Sommet<VertexType>* C = first->fin;
@@ -74,6 +77,7 @@ public:
 
             //On change A->B et B->D en A->B et C->D
             second->fin = C;
+            cout << "cycle sortie: " << ret.arcsList;
             return ret;
         }
 

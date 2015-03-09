@@ -155,7 +155,7 @@ Dans cette version, une solution et son coût associé sont associés dans un ob
 */
 template <class SolutionType>
 const SolutionCout<SolutionType> recuitSimule(const double & tInitiale, const double & tFinale, const int nombreTentativesMax, const int nombreSuccesMax, const SolutionType & solutionInitiale,
-                                    double (*cout1)(const SolutionType & solution), const SolutionType (* changementAleatoire)(const SolutionType & solution), double (*succ)(const double & temperature)){
+                                               double (*cout1)(const SolutionType & solution), const SolutionType (* changementAleatoire)(const SolutionType & solution), double (*succ)(const double & temperature)){
 
     SolutionCout<SolutionType>  solutionCourante(solutionInitiale, cout1);
     SolutionCout<SolutionType> bestSolution(solutionCourante);
@@ -166,7 +166,6 @@ const SolutionCout<SolutionType> recuitSimule(const double & tInitiale, const do
 
         for (nombreTentatives = nombreSucces = 0; nombreTentatives < nombreTentativesMax && nombreSucces < nombreSuccesMax; ++nombreTentatives){
 
-            cout << endl<< endl << "passage: " << t << " "<<nombreTentatives << endl;
             SolutionCout<SolutionType> solutionPrecedente(solutionCourante);
             solutionCourante = solutionCourante.change(changementAleatoire,cout1);
           // cout<< "solution courante = " << solutionCourante.solution << endl;
@@ -190,7 +189,7 @@ const SolutionCout<SolutionType> recuitSimule(const double & tInitiale, const do
                   solutionCourante = solutionPrecedente;	// la solution courante est refusée
                }
             }
-            std::cout << "solution actuelle: " << solutionCourante.solution.arcsList;
+
         }	 // for, boucle tentatives d'améliorations
 
         if (nombreSucces == 0) return bestSolution;		// l'algorithme est stationnaire : il a atteint un minimum, on arrête tout et on retourne la meilleure solution trouvée

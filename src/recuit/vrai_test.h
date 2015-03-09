@@ -36,7 +36,6 @@ const Graphe<double,string>::CycleEulerien changement_aleatoire(const Graphe<dou
 void vrai_test(){
 
 
-    cout <<  endl << "lol" <<endl;
     double temp_init = 50;
     double temp_final = 0;
     int nb_max_iteration = 100;
@@ -48,22 +47,20 @@ void vrai_test(){
     graphe.creeSommet("D");
     graphe.creeSommet("E");
 
-    /*
+
     for( PElement<Sommet<string> >* i = graphe.lSommets ;  i != NULL ; i = i->suivant ){
-        for(PElement<Sommet<string> >* j = graphe.lSommets ;  j != NULL ; j = j->suivant){
-            graphe.creeArete(i->valeur,j->valeur,50*rand());
+        for(PElement<Sommet<string> >* j = i->suivant ;  j != NULL ; j = j->suivant){
+            graphe.creeArete(i->valeur,j->valeur,rand() % 50);
         }
     }
-    */
 
     graphe.add_missing_arcs(DBL_MAX); // On rend le graphe complet
     Graphe<double,string>::CycleEulerien solutionInitiale = graphe.getFirstCycle();
-    cout << "solution initiale: " << solutionInitiale.arcsList;
-  //  cout << "graphe: " << graphe <<endl;
+    cout << "cout solution init: " << cout_cycle(solutionInitiale) << endl;
     SolutionCout< Graphe<double,string>::CycleEulerien > solution = recuitSimule(temp_init, temp_final, nb_max_iteration, nb_max_succes, solutionInitiale, &cout_cycle,&changement_aleatoire, &decrement);
 
     cout << "cout de la solution: " << solution.cout << endl;
-    cout << "meilleur chemin: " << solution.solution.arcsList << endl;
+    //cout << "meilleur chemin: " << solution.solution.arcsList << endl;
 
 }
 
