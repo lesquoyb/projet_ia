@@ -41,7 +41,7 @@ public:
 
 };
 
-inline double max(double a, double b) { return (a > b) ? a : b; }
+
 
 inline const Vecteur2D operator *(const double & a, const Vecteur2D & u) { return u*a;}
 
@@ -93,11 +93,12 @@ y*=a;
 return *this;
 }
 
+inline double maax(double a, double b) { return (a > b) ? a : b; }
 /**
  * calcule |u|_sup, c-à-d max(|x|,|y|)
  * */
 inline double normeSup(const Vecteur2D& u){
-return max(abs(u.x),abs(u.y));
+return maax(abs(u.x),abs(u.y));
 }
 
 
