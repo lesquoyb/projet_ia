@@ -33,23 +33,21 @@ public :
         PElement<T>* this2 = this;
          while(it != NULL){
            new PElement(new T(*it->valeur),this);
-           //this2 = this2->suivant;
            it = it->suivant;
          }
-        // this = this2;
     }
 
     PElement<T>* copy(){
         PElement<T>* this2 = this;
-        PElement<T>* ret = new PElement<T>(new T(*(this2->valeur)), NULL);
-        PElement<T>* temp = ret;
+        PElement<T>* first = new PElement<T>(this2->valeur, NULL);
+        PElement<T>* temp = first;
         this2 = this2->suivant;
         while(this2 != NULL) {
-            temp->suivant = new PElement<T>(new T(*(this2->valeur)), NULL);
+            temp->suivant = new PElement<T>(this2->valeur, NULL);
             this2 = this2->suivant;
             temp = temp->suivant;
         }
-        return ret;
+        return first;
     }
 
     static const string toString(const PElement<T> * p,

@@ -15,7 +15,8 @@ bool fun(const int* a, const int* b) { return *a <= *b; };
 
 int main() {
 
-    cout << "sérieusement"<< endl;
+    /* TODO achtung pas de boucle sur le même sommet, c'est un graphe complet, il n'est pas orienté */
+
     srand(time(NULL));
 
     //test_pelement();

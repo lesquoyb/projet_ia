@@ -26,8 +26,7 @@ public:
         PElement< Arete<ArcCost, VertexType> >* arcsList;
 
         void insert(const Arete<ArcCost, VertexType> & arete){
-            Arete<ArcCost,VertexType>* az = new Arete<ArcCost,VertexType>(&arete);
-            //cout << arete;
+
             arcsList = new PElement<Arete<ArcCost, VertexType> >(new Arete<ArcCost,VertexType>(arete), arcsList);
         }
 
@@ -42,7 +41,7 @@ public:
             arcsList(NULL)
         {
             for(PElement< Arete<ArcCost, VertexType> >* p = c.arcsList; p != NULL ; p = p->suivant){
-                arcsList = new PElement< Arete<ArcCost, VertexType> >(p->valeur,arcsList);
+                insert(p->valeur);
             }
         }
 
@@ -59,8 +58,8 @@ public:
             Arete<ArcCost,VertexType>* first = ret.arcsList->randomElement();
             Arete<ArcCost,VertexType>* second = ret.arcsList->randomElement();
             /*TODO vérif */
-            while(   second->fin->clef    ==  first->debut->clef
-                  || second->debut->clef  ==  first->fin->clef){
+            while(   second->fin->valeur    ==  first->debut->valeur
+                  || second->debut->valeur  ==  first->fin->valeur){
 
                 second = ret.arcsList->randomElement();
             }
@@ -96,11 +95,15 @@ public:
             //On inverse tous les arcs jusqu'a ce qu'on tombe sur l'arc qui fini en to
 
             Sommet<VertexType>* tmp;
-            do{
+            while(true){
                 tmp = iterator->valeur->debut;
                 iterator->valeur->debut = iterator->valeur->fin;
                 iterator->valeur->fin = tmp;
+                tmp = iterator->valeur->debut;
                 iterator = iterator->suivant;//pas de problème puisque le pointeur est une copie
+                if(tmp->valeur != to.valeur){
+                    break;
+                }
                 if(iterator == NULL){
                     iterator = first;//un tour de boucle
                     count++;
@@ -108,7 +111,7 @@ public:
                         throw Exception("plus d'un tour de boucle !");
                     }
                 }
-            }while(iterator->valeur->debut->valeur != to.valeur);
+            }
         }
 
     };
@@ -127,18 +130,15 @@ public:
         PElement<Sommet<VertexType> >* remaining = lSommets->copy();
         PElement<Sommet<VertexType> > ::retire(last,remaining); //enlève le premier sommet TODO: attention que lsommet ne soit pas modifié !
         for (int i = 1; i < PElement<Sommet<VertexType> >::taille(lSommets); i++){
-                cout << "1";
                 Sommet<VertexType>* sommet = remaining->randomElement();
-                cout << "2";
+                if(sommet->valeur == last->valeur){
+                    throw Exception("il y a une boucle parmi les arcs possible");
+                }
                 c.insert(*(getAreteParSommets(last,sommet)));
-                cout << "3";
                 last = sommet;
-                cout << "4";
                 PElement<Sommet<VertexType> > ::retire(last,remaining);
-                cout << endl;
-		}
-        cout << "2";
-        c.insert(*getAreteParSommets(last,lSommets->valeur)); //Pour refermer la boucle
+        }
+       // c.insert(*getAreteParSommets(last,lSommets->valeur)); //Pour refermer la boucle
         return c;
 	}
 
@@ -363,8 +363,8 @@ template<class ArcCost,class VertexType>
 void Graphe<ArcCost,VertexType>::add_missing_arcs(const ArcCost &infini){
 
     for(PElement<Sommet<VertexType> >* p = lSommets; p != NULL ; p = p->suivant){
-        for(PElement<Sommet<VertexType> >* q = p; q != NULL; q = q->suivant){
-            Arete<ArcCost,VertexType>* a =new  Arete<ArcCost,VertexType>(prochaineClef,p->valeur,q->valeur,infini);
+        for(PElement<Sommet<VertexType> >* q = p->suivant; q != NULL; q = q->suivant){
+            Arete<ArcCost,VertexType>* a = new  Arete<ArcCost,VertexType>(prochaineClef,p->valeur,q->valeur,infini);
             if( ! containsArc(*a) ){
                 lAretes = new PElement<Arete<ArcCost,VertexType> >(a,lAretes);
                 prochaineClef++;
