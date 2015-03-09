@@ -11,6 +11,7 @@ T est la nature de l'information portée par un sommet et
 S est la nature de l'information portée par une arête
 */
 #include "gelement.h"
+#include "sommet.h"
 
 
 template <class ArcCost, class VertexType>

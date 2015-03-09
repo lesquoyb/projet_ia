@@ -6,10 +6,17 @@
 #include "vrai_test.h"
 #include "valuedata.h"
 #include "connexion.h"
+#include <ctime>
 
 using namespace std;
 
 int main() {
+
+
+    srand(time(NULL));
+
+    cout << rand() << "lel";
+
     //test_pelement();
     //test_gelement();
     //test_recuit_simule_d2();
@@ -18,9 +25,10 @@ int main() {
 
 
     // Partie BaPeuhtiste
-    //vrai_test();
+    vrai_test();
 
     // Partie Mattew
+    /*
     Connexion::linkServer("127.0.0.1");
 
     ValueData *vA = new ValueData("A", Vecteur2D(1,1)), *vB = new ValueData("B", Vecteur2D(2,2)),
@@ -44,7 +52,7 @@ int main() {
 
     graphe2.ServeurSend();
     //graphe.toFile("recuit", "Recuit Simule", "Résultat du recuit simule", "plop");
-
+    */
 
 }
 

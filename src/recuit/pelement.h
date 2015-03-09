@@ -27,6 +27,21 @@ public :
      * */
     PElement( T * v, PElement<T> * s ): valeur(v),suivant(s){}
 
+    /**
+     * crée une copie de s
+     */
+    PElement(const PElement<T>* it):
+        suivant(NULL)
+    {
+        PElement<T>* this2 = this;
+         while(it != NULL){
+           this2 = new PElement(new T(*it->valeur),this2);
+           this2 = this2->suivant;
+           it = it->suivant;
+         }
+        // this = this2;
+    }
+
     static const string toString(const PElement<T> * p,
                         const char * debut="( ",
                         const char * separateur = ", ",
@@ -47,9 +62,9 @@ public :
     }
 
     T* randomElement()const{
-        int nbIte = rand() * PElement<T>::taille(this);
+        int nbIte = rand() % PElement<T>::taille(this);
         const PElement<T>* ret = this;
-        for( int i = 0; i <nbIte ;ret = ret->suivant);
+        for( int i = 0; i <nbIte ; i++,ret = ret->suivant);
         if(ret == NULL){
             throw Exception("Huston on a un problème");
         }
@@ -123,7 +138,7 @@ public :
      * Données : a, l
      * Résultats : l (éventuellement modifiée), par return : true si l'élément a été trouvé, false sinon
      * */
-    static bool retire(const T * a, PElement<T> * & l){
+    static bool retire(const T * a, PElement<T> * &l){
         if (!l)
            return false;
         else

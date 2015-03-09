@@ -53,7 +53,7 @@ void vrai_test(){
 
     graphe.add_missing_arcs(DBL_MAX); // On rend le graphe complet
     Graphe<double,string>::CycleEulerien solutionInitiale = graphe.getFirstCycle();
-    cout << "graphe: " << graphe <<endl;
+  //  cout << "graphe: " << graphe <<endl;
 
     SolutionCout< Graphe<double,string>::CycleEulerien > solution = recuitSimule(temp_init, temp_final, nb_max_iteration, nb_max_succes, solutionInitiale, &cout_cycle,&changement_aleatoire, &decrement);
 

@@ -29,10 +29,16 @@ public:
             arcsList = new PElement<Arete<ArcCost, VertexType> >(new Arete<ArcCost,VertexType>(arete), arcsList);
         }
 
+        void insert(const Arete<ArcCost, VertexType> & arete,PElement<Arete<ArcCost, VertexType> >* next ){
+            insert(arete);
+            arcsList->suivant = next;
+        }
 
         CycleEulerien():arcsList(NULL){}
 
-        CycleEulerien(const CycleEulerien &c){
+        CycleEulerien(const CycleEulerien &c):
+            arcsList(NULL)
+        {
             for(PElement< Arete<ArcCost, VertexType> >* p = c.arcsList; p != NULL ; p = p->suivant){
                 arcsList = new PElement< Arete<ArcCost, VertexType> >(p->valeur,arcsList);
             }
@@ -51,9 +57,7 @@ public:
             Arete<ArcCost,VertexType>* second = ret.arcsList->randomElement();
             /*TODO vérif */
             while(   second->fin->clef    ==  first->debut->clef
-                  || second->fin->clef    ==  first->fin->clef
-                  || second->debut->clef  ==  first->fin->clef
-                  || second->debut->clef  ==  first->debut->clef){
+                  || second->debut->clef  ==  first->fin->clef){
 
                 second = ret.arcsList->randomElement();
             }
@@ -81,28 +85,28 @@ public:
          * @return
          */
         static void invert_path(PElement< Arete<ArcCost, VertexType> >* iterator,const Sommet<VertexType> &from,const Sommet<VertexType> &to){
+
+            PElement< Arete<ArcCost, VertexType> >*first = iterator;
+            short count = 0;
             //On atteind le point from
             for(; iterator->valeur->debut->clef == from.clef ; iterator = iterator->suivant);
             //On inverse tous les arcs jusqu'a ce qu'on tombe sur l'arc qui fini en to
+
             Sommet<VertexType>* tmp;
             do{
                 tmp = iterator->valeur->debut;
                 iterator->valeur->debut = iterator->valeur->fin;
                 iterator->valeur->fin = tmp;
+                iterator = iterator->suivant;//pas de problème puisque le pointeur est une copie
+                if(iterator == NULL){
+                    iterator = first;//un tour de boucle
+                    count++;
+                    if(count>1){
+                        throw Exception("plus d'un tour de boucle !");
+                    }
+                }
             }while(iterator->valeur->debut->clef != to.clef);
         }
-
-        /**
-         * comme on est dans un cycle, pas de detection des boucles et autres, on avance juste jusqu'a arrivé au point voulu.
-         * @brief return_path un sous ensemble de la liste d'arc passé en paramètre
-         * @param arcsList
-         * @param from
-         * @param to
-         * @return
-         */
-
-
-
 
     };
 
@@ -116,15 +120,17 @@ public:
         /* TODO achtung graphe avec un élément */
         /* TODO vérif que ça sort bien un cycle hamiltonien */
         CycleEulerien c;
-        for (int i = 0; i < PElement<Sommet<VertexType> >::taille(lSommets); i++){
-                Arete<ArcCost, VertexType>* arete;
-                //TODO: améliorable avec une seconde liste représentant les disponibles
-                do{
-                    arete = lAretes->randomElement();
-                }
-                while(  PElement<Arete<ArcCost, VertexType> >::appartient(arete,c.arcsList ));
-                c.insert(*arete);
+        Sommet<VertexType>* last = lSommets->valeur;
+        PElement<Sommet<VertexType> >* remaining = new PElement<Sommet<VertexType> >(lSommets);
+        PElement<Sommet<VertexType> > ::retire(last,remaining); //enlève le premier sommet TODO: attention que lsommet ne soit pas modifié !
+
+        for (int i = 1; i < PElement<Sommet<VertexType> >::taille(lSommets); i++){
+                Sommet<VertexType>* sommet = remaining->randomElement();
+                c.insert(*getAreteParSommets(last,sommet));
+                last = sommet;
+                PElement<Sommet<VertexType> > ::retire(last,remaining);
 		}
+        c.insert(*getAreteParSommets(last,lSommets->valeur)); //Pour refermer la boucle
         return c;
 	}
 
@@ -145,7 +151,6 @@ public:
 
 	Sommet<VertexType> * creeSommet(const VertexType & info);
 
-    Graphe<ArcCost,VertexType> solutionInitiale();
 
 
 	/**
@@ -257,8 +262,8 @@ ostream & operator<<(ostream & os, const Graphe<S, T> & graphe) {
 template <class S, class T>
 Arete<S, T> * Graphe<S, T>::getAreteParSommets(const Sommet<T> * s1, const Sommet<T> * s2) const{
 	PElement<Arete<S, T> > * l;
-	for (l = this->lAretes; l; l = l->s) {
-		if (l->v->estEgal(s1, s2)) return l->v;
+    for (l = this->lAretes; l; l = l->suivant) {
+        if (l->valeur->estEgal(s1, s2)) return l->valeur;
 	}
 	return NULL;
 }
@@ -370,24 +375,7 @@ bool Graphe<ArcCost,VertexType>::containsArc(const Arete<ArcCost,VertexType> &a)
     return false;
 }
 
-/**
- *Crée le premier cycle eulerien du graphe choisi aléatoirement
- */
-template<class ArcCost,class VertexType>
-Graphe<ArcCost,VertexType> Graphe<ArcCost,VertexType>::solutionInitiale(){
-    /*TODO: choisir aléatoirement */
-    Graphe<ArcCost,VertexType> graphe;
-    PElement<Sommet<VertexType> >* last = NULL;
-    for( PElement<Sommet<VertexType> >* i = graphe.lSommets ;  i != NULL ; i = i->suivant ){
-        graphe.creeSommet(new VertexType(i));
-        if (last != NULL) {
-            graphe.creeArete( graphe.getAreteParSommets(last, i));
-        }
-    }
-    graphe.creeArete( graphe.getAreteParSommets(last, graphe.lSommets));
 
-    return graphe;
-}
 
 
 
