@@ -35,8 +35,8 @@ public :
     {
         PElement<T>* this2 = this;
          while(it != NULL){
-           this2 = new PElement(new T(*it->valeur),this2);
-           this2 = this2->suivant;
+           new PElement(new T(*it->valeur),this);
+           //this2 = this2->suivant;
            it = it->suivant;
          }
         // this = this2;
