@@ -1,5 +1,6 @@
 #ifndef SOMMET
 #define SOMMET
+#include "gelement.h"
 
 /**
 Sommet d'un graphe en général

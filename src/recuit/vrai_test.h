@@ -13,6 +13,8 @@
 #include "vector2d.h"
 #include "recuit_simule_d2.h"
 
+
+
 double decrement(const double &old_temp){return old_temp-1;}
 //using Graphe<double,string>::CycleEuclidien;
 
@@ -33,6 +35,8 @@ const Graphe<double,string>::CycleEulerien changement_aleatoire(const Graphe<dou
 
 void vrai_test(){
 
+
+    cout <<  endl << "lol" <<endl;
     double temp_init = 50;
     double temp_final = 0;
     int nb_max_iteration = 100;
@@ -44,16 +48,17 @@ void vrai_test(){
     graphe.creeSommet("D");
     graphe.creeSommet("E");
 
+    /*
     for( PElement<Sommet<string> >* i = graphe.lSommets ;  i != NULL ; i = i->suivant ){
         for(PElement<Sommet<string> >* j = graphe.lSommets ;  j != NULL ; j = j->suivant){
             graphe.creeArete(i->valeur,j->valeur,50*rand());
         }
     }
+    */
 
     graphe.add_missing_arcs(DBL_MAX); // On rend le graphe complet
-    cout << "a";
     Graphe<double,string>::CycleEulerien solutionInitiale = graphe.getFirstCycle();
-    cout << "b";
+    cout << "solution initiale: " << solutionInitiale.arcsList;
   //  cout << "graphe: " << graphe <<endl;
     SolutionCout< Graphe<double,string>::CycleEulerien > solution = recuitSimule(temp_init, temp_final, nb_max_iteration, nb_max_succes, solutionInitiale, &cout_cycle,&changement_aleatoire, &decrement);
 
