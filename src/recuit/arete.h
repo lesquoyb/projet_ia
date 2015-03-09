@@ -25,6 +25,8 @@ public:
     Arete(int clef, Sommet<VertexType> * debut, Sommet<VertexType> * fin, const ArcCost & v):
         GElement(clef),debut(debut),fin(fin),valeur(v){}
 
+    Arete(const Arete<ArcCost, VertexType>* ar): GElement(ar->clef), debut(ar->debut), fin(ar->fin), valeur(ar->valeur){cout << "aazeq";}
+
 	operator string () const;
 
     /**

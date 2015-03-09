@@ -26,7 +26,11 @@ public:
         PElement< Arete<ArcCost, VertexType> >* arcsList;
 
         void insert(const Arete<ArcCost, VertexType> & arete){
-            arcsList = new PElement<Arete<ArcCost, VertexType> >(new Arete<ArcCost,VertexType>(arete), arcsList);
+            cout << "w";
+            Arete<ArcCost,VertexType>* az = new Arete<ArcCost,VertexType>(&arete);
+            cout << "x";
+            //cout << arete;
+            //arcsList = new PElement<Arete<ArcCost, VertexType> >(new Arete<ArcCost,VertexType>(arete), arcsList);
         }
 
         void insert(const Arete<ArcCost, VertexType> & arete,PElement<Arete<ArcCost, VertexType> >* next ){
@@ -121,15 +125,20 @@ public:
         /* TODO vérif que ça sort bien un cycle hamiltonien */
         CycleEulerien c;
         Sommet<VertexType>* last = lSommets->valeur;
-        PElement<Sommet<VertexType> >* remaining = new PElement<Sommet<VertexType> >(lSommets);
+        PElement<Sommet<VertexType> >* remaining = lSommets->copy();
         PElement<Sommet<VertexType> > ::retire(last,remaining); //enlève le premier sommet TODO: attention que lsommet ne soit pas modifié !
-
         for (int i = 1; i < PElement<Sommet<VertexType> >::taille(lSommets); i++){
+                cout << "1";
                 Sommet<VertexType>* sommet = remaining->randomElement();
-                c.insert(*getAreteParSommets(last,sommet));
+                cout << "2";
+                c.insert(*(getAreteParSommets(last,sommet)));
+                cout << "3";
                 last = sommet;
+                cout << "4";
                 PElement<Sommet<VertexType> > ::retire(last,remaining);
+                cout << endl;
 		}
+        cout << "2";
         c.insert(*getAreteParSommets(last,lSommets->valeur)); //Pour refermer la boucle
         return c;
 	}

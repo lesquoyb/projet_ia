@@ -6,12 +6,9 @@
 #include <sstream>
 #include "exception.h"
 
-
 using std::string;
 using std::ostream;
 using std::ostringstream;
-
-
 
 
 template <class T>
@@ -44,8 +41,8 @@ public :
 
     PElement<T>* copy(){
         PElement<T>* this2 = this;
-        PElement<T>* temp = ret;
         PElement<T>* ret = new PElement<T>(new T(*(this2->valeur)), NULL);
+        PElement<T>* temp = ret;
         this2 = this2->suivant;
         while(this2 != NULL) {
             temp->suivant = new PElement<T>(new T(*(this2->valeur)), NULL);

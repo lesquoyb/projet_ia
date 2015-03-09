@@ -25,18 +25,9 @@ int main() {
 
 
     // Partie BaPeuhtiste
-    //vrai_test();
+    vrai_test();
 
     // Partie Mattew
-    PElement<int>* pint = new PElement<int>(new int(5), NULL);
-    pint->insertionOrdonnee(new int(8), pint, *fun);
-    pint->insertionOrdonnee(new int(4), pint, *fun);
-    cout << PElement<int>::toString(pint) << endl;
-    PElement<int>* pint2 = pint->copy();
-    pint->insertionOrdonnee(new int(6), pint, *fun);
-    cout << PElement<int>::toString(pint2) << endl;
-
-
     /*
     Connexion::linkServer("127.0.0.1");
 
