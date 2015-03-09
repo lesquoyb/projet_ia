@@ -1,8 +1,8 @@
 #include <iostream>
-#include "testpelement.h"
-#include "test_gelement.h"
+//#include "testpelement.h"
+//#include "test_gelement.h"
 #include "vector2d.h"
-#include "test_recuit_simule_d2.h"
+//#include "test_recuit_simule_d2.h"
 #include "vrai_test.h"
 #include "valuedata.h"
 #include "connexion.h"
@@ -15,6 +15,7 @@ bool fun(const int* a, const int* b) { return *a <= *b; };
 
 int main() {
 
+    cout << "sérieusement"<< endl;
     srand(time(NULL));
 
     //test_pelement();

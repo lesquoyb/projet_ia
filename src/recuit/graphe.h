@@ -26,11 +26,9 @@ public:
         PElement< Arete<ArcCost, VertexType> >* arcsList;
 
         void insert(const Arete<ArcCost, VertexType> & arete){
-            cout << "w";
             Arete<ArcCost,VertexType>* az = new Arete<ArcCost,VertexType>(&arete);
-            cout << "x";
             //cout << arete;
-            //arcsList = new PElement<Arete<ArcCost, VertexType> >(new Arete<ArcCost,VertexType>(arete), arcsList);
+            arcsList = new PElement<Arete<ArcCost, VertexType> >(new Arete<ArcCost,VertexType>(arete), arcsList);
         }
 
         void insert(const Arete<ArcCost, VertexType> & arete,PElement<Arete<ArcCost, VertexType> >* next ){
@@ -47,6 +45,7 @@ public:
                 arcsList = new PElement< Arete<ArcCost, VertexType> >(p->valeur,arcsList);
             }
         }
+
 
 
         CycleEulerien operator =(const CycleEulerien &c){
@@ -93,7 +92,7 @@ public:
             PElement< Arete<ArcCost, VertexType> >*first = iterator;
             short count = 0;
             //On atteind le point from
-            for(; iterator->valeur->debut->clef == from.clef ; iterator = iterator->suivant);
+            for(; iterator->valeur->debut->valeur == from.valeur ; iterator = iterator->suivant);
             //On inverse tous les arcs jusqu'a ce qu'on tombe sur l'arc qui fini en to
 
             Sommet<VertexType>* tmp;
@@ -109,7 +108,7 @@ public:
                         throw Exception("plus d'un tour de boucle !");
                     }
                 }
-            }while(iterator->valeur->debut->clef != to.clef);
+            }while(iterator->valeur->debut->valeur != to.valeur);
         }
 
     };
@@ -188,6 +187,8 @@ public:
 
     void toFile(string filename, string titre, string legende, string resume);
     void ServeurSend();
+
+
 };
 
 template <class S, class T>
@@ -272,7 +273,9 @@ template <class S, class T>
 Arete<S, T> * Graphe<S, T>::getAreteParSommets(const Sommet<T> * s1, const Sommet<T> * s2) const{
 	PElement<Arete<S, T> > * l;
     for (l = this->lAretes; l; l = l->suivant) {
-        if (l->valeur->estEgal(s1, s2)) return l->valeur;
+        if (l->valeur->estEgal(s1, s2)){
+            return l->valeur;
+        }
 	}
 	return NULL;
 }

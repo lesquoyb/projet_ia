@@ -60,7 +60,7 @@ ostream & operator << (ostream & os, const Arete<S,T> & arete) { return os << (s
 
 template <class S, class T>
 bool Arete<S,T>::estEgal( const Sommet<T> * s1, const Sommet<T> * s2) const { 
-	return (s1 == debut && s2 == fin) || (s1 == fin && s2 == debut);
+    return (s1->valeur == debut->valeur && s2->valeur == fin->valeur) || (s1->valeur == fin->valeur && s2->valeur == debut->valeur);
 }
 
 template <class ArcCost, class VertexType>
