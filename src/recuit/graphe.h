@@ -37,6 +37,10 @@ public:
 
         CycleEulerien():arcsList(NULL){}
 
+        /**
+         * @brief CycleEulerien construit un cycle à partir d'un autre, pas de copie des éléments
+         * @param c
+         */
         CycleEulerien(const CycleEulerien &c):
             arcsList(NULL)
         {
@@ -54,7 +58,7 @@ public:
         static CycleEulerien changement_aleatoire(const CycleEulerien &cycle){
             /* TODO attention il ne faut surtout pas modifier le cycle d'entrée, il y aura donc certainement
              * des choses à revoir dans cet algo */
-            cout << "cycle entré: " << cycle.arcsList << endl;
+
             CycleEulerien ret = CycleEulerien(cycle);
             Arete<ArcCost,VertexType>* first = ret.arcsList->randomElement();
             Arete<ArcCost,VertexType>* second = ret.arcsList->randomElement();
@@ -77,7 +81,7 @@ public:
 
             //On change A->B et B->D en A->B et C->D
             second->fin = C;
-            cout << "cycle sortie: " << ret.arcsList;
+            //cout << "cycle sortie: " << ret.arcsList;
             return ret;
         }
 

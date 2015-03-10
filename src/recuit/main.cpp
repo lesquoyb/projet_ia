@@ -11,7 +11,7 @@
 using namespace std;
 
 
-bool fun(const int* a, const int* b) { return *a <= *b; };
+bool fun(const int* a, const int* b) { return *a <= *b; }
 
 int main() {
 
