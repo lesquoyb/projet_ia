@@ -14,6 +14,7 @@ public:
 	
 	Sommet(const int clef, const T & v): GElement(clef), degre(0), valeur(v){}
 	operator string() const;
+    bool operator==(const Sommet<T>&) const;
 };
 
 template <class T>
@@ -26,6 +27,11 @@ Sommet<T>::operator string () const {
 	oss <<"v = " <<  valeur << endl;
 	oss<<")";
 	return oss.str();
+}
+
+template <class T>
+bool Sommet<T>::operator==(const Sommet<T>& s) const {
+    return (s.degre == degre && s.valeur == valeur);
 }
 
 template <class T>

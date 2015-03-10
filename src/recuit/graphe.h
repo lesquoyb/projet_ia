@@ -14,7 +14,7 @@ class Graphe {
 
 
 protected:
-	int prochaineClef;
+    int prochaineClef;
 
 public:
 
@@ -155,8 +155,8 @@ public:
     };
 
 
-	PElement< Arete<ArcCost, VertexType> > * lAretes; // liste d'arêtes
-	PElement< Sommet<VertexType> > * lSommets; // liste de sommets
+    PElement< Arete<ArcCost, VertexType> > * lAretes; // liste d'arêtes
+    PElement< Sommet<VertexType> > * lSommets; // liste de sommets
 
 
 
@@ -178,53 +178,53 @@ public:
         }
        // c.insert(*getAreteParSommets(last,lSommets->valeur)); //Pour refermer la boucle
         return c;
-	}
+    }
 
-	Graphe();
-	Graphe(const Graphe<ArcCost, VertexType> & graphe);
+    Graphe();
+    Graphe(const Graphe<ArcCost, VertexType> & graphe);
 
 
-	const Graphe<ArcCost, VertexType> & operator = (const Graphe<ArcCost, VertexType> & graphe);
+    const Graphe<ArcCost, VertexType> & operator = (const Graphe<ArcCost, VertexType> & graphe);
 
-	~Graphe();
+    ~Graphe();
 
-	int nombreSommets() const;
-	int nombreAretes() const;
+    int nombreSommets() const;
+    int nombreAretes() const;
 
     void add_missing_arcs(const ArcCost &infini);
 
     bool containsArc(const Arete<ArcCost,VertexType> &a);
 
-	Sommet<VertexType> * creeSommet(const VertexType & info);
+    Sommet<VertexType> * creeSommet(const VertexType & info);
 
 
 
-	/**
-	* crée une arête joignant les 2 sommets debut et fin
-	*
-	* * met à jour les champs degré de debut et de fin
-	* */
+    /**
+    * crée une arête joignant les 2 sommets debut et fin
+    *
+    * * met à jour les champs degré de debut et de fin
+    * */
     Arete<ArcCost, VertexType> * creeArete(Sommet<VertexType> * debut, Sommet<VertexType> * fin, const ArcCost & info);
     Arete<ArcCost, VertexType> * creeArete(Arete<ArcCost, VertexType> *arete);
 
-	/**
-	recherche la liste des paires (voisin, arête) adjacentes de sommet dans le graphe
-	*/
-	PElement< pair< Sommet<VertexType> *, Arete<ArcCost, VertexType>* > >  *
-		adjacences(const Sommet<VertexType> * sommet) const;
-	operator string() const;
+    /**
+    recherche la liste des paires (voisin, arête) adjacentes de sommet dans le graphe
+    */
+    PElement< pair< Sommet<VertexType> *, Arete<ArcCost, VertexType>* > >  *
+        adjacences(const Sommet<VertexType> * sommet) const;
+    operator string() const;
 
-	/**
-	* cherche l'arête s1 - s2 ou l'arête s2 - s1 si elle existe
-	*
-	* DONNEES : s1 et s2 deux sommets quelconques du graphe
-	* RESULTATS : l'arête s'appuyant sur s1 et s2 si elle existe, NULL sinon
-	*
-	* */
-	Arete<ArcCost, VertexType> * getAreteParSommets(const Sommet<VertexType> * s1, const Sommet<VertexType> * s2) const;
+    /**
+    * cherche l'arête s1 - s2 ou l'arête s2 - s1 si elle existe
+    *
+    * DONNEES : s1 et s2 deux sommets quelconques du graphe
+    * RESULTATS : l'arête s'appuyant sur s1 et s2 si elle existe, NULL sinon
+    *
+    * */
+    Arete<ArcCost, VertexType> * getAreteParSommets(const Sommet<VertexType> * s1, const Sommet<VertexType> * s2) const;
 
-    void toFile(string filename, string titre, string legende, string resume);
-    void ServeurSend();
+    void toFile(string filename, string titre, string legende, string resume, const CycleEulerien&);
+    void ServeurSend(const CycleEulerien&);
 
 
 };
@@ -234,25 +234,25 @@ Graphe<S, T>::Graphe() : prochaineClef(0), lAretes(NULL), lSommets(NULL){}
 
 template <class S, class T>
 Graphe<S, T>::Graphe(const Graphe<S, T> & graphe) {
-	throw Exception("pas encore écrit : reste à faire");
+    throw Exception("pas encore écrit : reste à faire");
 }
 
 template <class S, class T>
 const Graphe<S, T> & Graphe<S, T>::operator = (const Graphe<S, T> & graphe) {
-	throw Exception("pas encore écrit : reste à faire");
+    throw Exception("pas encore écrit : reste à faire");
 }
 
 template <class S, class T>
 Graphe<S, T>::~Graphe() {
-	PElement< Arete<S, T> >::efface2(this->lAretes);
-	PElement<Sommet<T> >::efface2(this->lSommets);
+    PElement< Arete<S, T> >::efface2(this->lAretes);
+    PElement<Sommet<T> >::efface2(this->lSommets);
 }
 
 template <class S, class T>
 Sommet<T> * Graphe<S, T>::creeSommet(const T & info) {
-	Sommet<T> * sommetCree = new Sommet<T>(prochaineClef++, info);
-	lSommets = new PElement< Sommet<T> >(sommetCree, lSommets);
-	return sommetCree;
+    Sommet<T> * sommetCree = new Sommet<T>(prochaineClef++, info);
+    lSommets = new PElement< Sommet<T> >(sommetCree, lSommets);
+    return sommetCree;
 }
 
 template <class S, class T>
@@ -278,68 +278,68 @@ Arete<S, T> * Graphe<S, T>::creeArete(Arete<S, T> *arete) {
 
 template <class S, class T>
 int Graphe<S, T>::nombreSommets() const{
-	return PElement< Sommet<T> >::taille(lSommets);
+    return PElement< Sommet<T> >::taille(lSommets);
 }
 
 
 template <class S, class T>
 int Graphe<S, T>::nombreAretes() const {
-	return PElement< Arete<S, T> >::taille(lAretes);
+    return PElement< Arete<S, T> >::taille(lAretes);
 }
 
 template <class S, class T>
 Graphe<S, T>::operator string() const{
-	ostringstream oss;
-	oss << "Graphe( \n";
-	oss << "prochaine clef = " << this->prochaineClef << endl;
-	oss << "nombre de sommets = " << this->nombreSommets() << "\n";
-	oss << PElement<Sommet<T> >::toString(lSommets, "", "\n", "");
-	oss << "nombre d'arêtes = " << this->nombreAretes() << "\n";
-	oss << PElement<Arete<S, T> >::toString(lAretes, "", "\n", "");
-	oss << ")";
-	return oss.str();
+    ostringstream oss;
+    oss << "Graphe( \n";
+    oss << "prochaine clef = " << this->prochaineClef << endl;
+    oss << "nombre de sommets = " << this->nombreSommets() << "\n";
+    oss << PElement<Sommet<T> >::toString(lSommets, "", "\n", "");
+    oss << "nombre d'arêtes = " << this->nombreAretes() << "\n";
+    oss << PElement<Arete<S, T> >::toString(lAretes, "", "\n", "");
+    oss << ")";
+    return oss.str();
 }
 
 
 
 template <class S, class T>
 ostream & operator<<(ostream & os, const Graphe<S, T> & graphe) {
-	return os << (string)graphe;
+    return os << (string)graphe;
 }
 
 template <class S, class T>
 Arete<S, T> * Graphe<S, T>::getAreteParSommets(const Sommet<T> * s1, const Sommet<T> * s2) const{
-	PElement<Arete<S, T> > * l;
+    PElement<Arete<S, T> > * l;
     for (l = this->lAretes; l; l = l->suivant) {
         if (l->valeur->estEgal(s1, s2)){
             return l->valeur;
         }
-	}
-	return NULL;
+    }
+    return NULL;
 }
 
 
 // Retourne la liste des voisins d'un Sommet => Pair(Sommet - Arete)
 template <class S, class T>
 PElement<pair<Sommet<T>*, Arete<S, T>*> >* Graphe<S, T>::adjacences(const Sommet<T> * sommet) const{
-	const PElement< Arete<S, T> > * l;
-	PElement< pair< Sommet<T> *, Arete<S, T>* > > * r;
+    const PElement< Arete<S, T> > * l;
+    PElement< pair< Sommet<T> *, Arete<S, T>* > > * r;
 
-	for (l = lAretes, r = NULL; l; l = l->suivant)
+    for (l = lAretes, r = NULL; l; l = l->suivant)
 
-		if (sommet == l->v->debut)
-			r = new PElement< pair< Sommet<T> *, Arete<S, T>* > >(new pair<Sommet<T>*, Arete<S, T>*>(l->v->fin, l->v), r);
-		else
-			if (sommet == l->valeur->fin)
-				r = new PElement< pair< Sommet<T> *, Arete<S, T>* > >
-				(new pair< Sommet<T> *, Arete<S, T>* >
-				(l->valeur->debut, l->valeur), r);
-	return r;
+        if (sommet == l->v->debut)
+            r = new PElement< pair< Sommet<T> *, Arete<S, T>* > >(new pair<Sommet<T>*, Arete<S, T>*>(l->v->fin, l->v), r);
+        else
+            if (sommet == l->valeur->fin)
+                r = new PElement< pair< Sommet<T> *, Arete<S, T>* > >
+                (new pair< Sommet<T> *, Arete<S, T>* >
+                (l->valeur->debut, l->valeur), r);
+    return r;
 }
 
 
 template <class S, class ValueData>
-void Graphe<S, ValueData>::toFile(string filename, string titre, string legende, string resume){
+void Graphe<S, ValueData>::toFile(string filename, string titre, string legende, string resume, const CycleEulerien& c){
     ofstream fichier("../../docs/bsplines/" + filename + ".txt", ios::out | ios::trunc);
 
     if(fichier){
@@ -349,36 +349,55 @@ void Graphe<S, ValueData>::toFile(string filename, string titre, string legende,
         fichier << "type de scene = courbes" << endl;
         fichier << "coin bas gauche de la figure sur l'écran en coordonnées monde = ( -1, -1)" << endl;
         fichier << "coin haut droit de la figure sur l'écran en coordonnées monde = ( 10, 10)" << endl;
-        fichier << "nombre de points remarquables =" << nombreSommets() << endl;
+        fichier << "nombre de points remarquables =" << (nombreSommets() + nombreAretes()) << endl;
+
+        // Affichage des points
         PElement<Sommet<ValueData> > *tempsom = lSommets;
         while (tempsom != NULL) {
             fichier << "point remarquable = 2 black (" << tempsom->valeur->valeur.position.x << "," << tempsom->valeur->valeur.position.y << ") " << tempsom->valeur->valeur.nom << endl;
             tempsom = tempsom->suivant;
         }
 
-        fichier << "nombre de courbes = " << nombreAretes() << endl;
+        // Affichage des poids
         PElement<Arete<double,ValueData> > *temp = lAretes;
         while (temp != NULL) {
-            fichier << "couleur =  green" << endl;
+            int x_middle = (temp->valeur->fin->valeur.position.x - temp->valeur->debut->valeur.position.x) /2 + temp->valeur->debut->valeur.position.x;
+            int y_middle = (temp->valeur->fin->valeur.position.y - temp->valeur->debut->valeur.position.y) /2 + temp->valeur->debut->valeur.position.y;
+            fichier << "point remarquable = 2 black (" << x_middle << "," << y_middle << ") " << temp->valeur->valeur << endl;
+            temp = temp->suivant;
+        }
+
+        // Affichage moche des lignes bleues
+        fichier << "nombre de courbes = " << (nombreAretes() + 0) << endl;
+        temp = lAretes;
+        string couleur;
+        while (temp != NULL) {
+            if (lAretes->appartient2(temp->valeur, c.arcsList)) couleur = "blue" ;
+            else couleur = "green";
+            fichier << "couleur =  " << couleur << endl;
             fichier << "nombre de points = 2" << endl;
             fichier << "( " << temp->valeur->debut->valeur.position.x << ", " << temp->valeur->debut->valeur.position.y << ")" << endl;
             fichier << "( " << temp->valeur->fin->valeur.position.x << ", " << temp->valeur->fin->valeur.position.y << ")" << endl;
             temp = temp->suivant;
         }
+
         fichier.close();
     } else cerr << "Impossible d'ouvrir le fichier !" << endl;
 }
 
 
 template <class S, class ValueData>
-void Graphe<S, ValueData>::ServeurSend() {
+void Graphe<S, ValueData>::ServeurSend(const CycleEulerien& c) {
     PElement<Arete<double,ValueData> > *temp = lAretes;
+    string couleur;
     while (temp != NULL) {
+        if (lAretes->appartient2(temp->valeur, c.arcsList)) couleur = "#235CA1" ;
+        else couleur = "#222222";
         double x1 = 2*temp->valeur->debut->valeur.position.x;
         double x2 = 2*temp->valeur->fin->valeur.position.x;
         double y1 = 2*temp->valeur->debut->valeur.position.y;
         double y2 = 2*temp->valeur->fin->valeur.position.y;
-        Connexion::commit("s{" + std::to_string(x1) + "," + std::to_string(y1) + "," + std::to_string(x2) + "," + std::to_string(y2) + ",#222222}");
+        Connexion::commit("s{" + std::to_string(x1) + "," + std::to_string(y1) + "," + std::to_string(x2) + "," + std::to_string(y2) + "," + couleur + "}");
 
         temp = temp->suivant;
     }

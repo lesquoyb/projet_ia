@@ -77,7 +77,6 @@ void Connexion::push() {
         for (string a_query : query) { temp += a_query + Connexion::separator; }
         temp += Connexion::transmission_end + Connexion::separator + "\r\n";
         query.clear();
-        cout << temp;
         char* queries = _strdup(temp.c_str());
         if (send(Connexion::sock, queries, strlen(queries), 0) == SOCKET_ERROR) { throw Exception("échec de l'envoi de la requête"); }
     } else {
