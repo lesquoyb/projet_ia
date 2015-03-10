@@ -53,7 +53,7 @@ public:
                 }*/
 
                 fichier << "nombre de courbes = " << arcsList->taille(arcsList) << endl;
-                PElement<Arete<double,ValueData> > *temp = arcsList;
+                PElement<Arete<ArcCost,VertexType> > *temp = arcsList;
                 while (temp != NULL) {
                     fichier << "couleur =  green" << endl;
                     fichier << "nombre de points = 2" << endl;
