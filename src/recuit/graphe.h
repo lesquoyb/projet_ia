@@ -35,6 +35,36 @@ public:
             arcsList->suivant = next;
         }
 
+        void toFile(string filename, string titre, string legende, string resume){
+            ofstream fichier("../../docs/bsplines/" + filename + ".txt", ios::out | ios::trunc);
+
+            if(fichier){
+                fichier << "titre = " << titre << endl;
+                fichier << "legende = " << legende << endl;
+                fichier << "resume = " << resume << endl;
+                fichier << "type de scene = courbes" << endl;
+                fichier << "coin bas gauche de la figure sur l'écran en coordonnées monde = ( -1, -1)" << endl;
+                fichier << "coin haut droit de la figure sur l'écran en coordonnées monde = ( 10, 10)" << endl;
+                fichier << "nombre de points remarquables = 0" << endl;
+                /*PElement<Sommet<ValueData> > *tempsom = lSommets;
+                while (tempsom != NULL) {
+                    fichier << "point remarquable = 2 black (" << tempsom->valeur->valeur.position.x << "," << tempsom->valeur->valeur.position.y << ") " << tempsom->valeur->valeur.nom << endl;
+                    tempsom = tempsom->suivant;
+                }*/
+
+                fichier << "nombre de courbes = " << arcsList->taille(arcsList) << endl;
+                PElement<Arete<double,ValueData> > *temp = arcsList;
+                while (temp != NULL) {
+                    fichier << "couleur =  green" << endl;
+                    fichier << "nombre de points = 2" << endl;
+                    fichier << "( " << temp->valeur->debut->valeur.position.x << ", " << temp->valeur->debut->valeur.position.y << ")" << endl;
+                    fichier << "( " << temp->valeur->fin->valeur.position.x << ", " << temp->valeur->fin->valeur.position.y << ")" << endl;
+                    temp = temp->suivant;
+                }
+                fichier.close();
+            } else cerr << "Impossible d'ouvrir le fichier !" << endl;
+        }
+
         CycleEulerien():arcsList(NULL){}
 
         CycleEulerien(const CycleEulerien &c):
