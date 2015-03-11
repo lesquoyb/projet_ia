@@ -35,7 +35,7 @@ public:
             arcsList->suivant = next;
         }
 
-        void toFile(string filename, string titre, string legende, string resume){
+        void toFile(string filename, string titre, string legende, string resume) const{
             ofstream fichier("../../docs/bsplines/" + filename + ".txt", ios::out | ios::trunc);
 
             if(fichier){
@@ -101,17 +101,25 @@ public:
 
             //On viens de tirer deux arcs au hasard qui ne sont pas l'un à la suite de l'autre
 
+            cycle.toFile("cycleInit" + to_string(first->clef) +to_string(second->clef), "b", "c", "d");
+            ret.toFile("retInit" + to_string(first->clef) +to_string(second->clef), "b", "c", "d");
 
+            cout << *first << endl << *second << endl << endl;
             //On change A->C et B->D en A->B et B->D
             Sommet<VertexType>* C = first->fin;
             first->fin = second->debut;
 
             //On trouve le chemin de B vers C et on l'inverse
-            invert_path(cycle.arcsList,*second->debut,*C);
+            invert_path(ret.arcsList,*second->debut,*C);
 
             //On change A->B et B->D en A->B et C->D
             second->fin = C;
             //cout << "cycle sortie: " << ret.arcsList;
+
+            cycle.toFile("cycleEndit" + to_string(first->clef) +to_string(second->clef), "b", "c", "d");
+            ret.toFile("retEndit" + to_string(first->clef) +to_string(second->clef), "b", "c", "d");
+
+
             return ret;
         }
 
