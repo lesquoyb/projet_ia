@@ -62,15 +62,19 @@ void vrai_test(){
     graphe.add_missing_arcs(DBL_MAX); // On rend le graphe complet
 
     Graphe<double,ValueData>::CycleEulerien solutionInitiale = graphe.getFirstCycle();
-
-    graphe.toFile("recuit_initial", "a", "b", "c", solutionInitiale);
+    //Connexion::linkServer("192.168.1.11");
+    //graphe.ServeurSend(solutionInitiale);
+   // Connexion::commit("s{0,0,5,5,#222222}", true);
+   // Connexion::push();
+   //   graphe.toFile("recuit_initial", "a", "b", "c", solutionInitiale);
 
     cout << "cout solution init: " << cout_cycle(solutionInitiale) << endl;
     SolutionCout< Graphe<double,ValueData>::CycleEulerien > solution = recuitSimule(temp_init, temp_final, nb_max_iteration, nb_max_succes, solutionInitiale, &cout_cycle,&changement_aleatoire, &decrement);
 
-    graphe.toFile("recuit_final", "a", "b", "c", solution.solution);
+    //graphe.toFile("recuit_final", "a", "b", "c", solution.solution);
     cout << "cout de la solution: " << solution.cout << endl;
     //cout << "meilleur chemin: " << solution.solution.arcsList << endl;
+
 
 }
 

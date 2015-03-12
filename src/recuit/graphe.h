@@ -98,6 +98,10 @@ public:
             /* TODO attention il ne faut surtout pas modifier le cycle d'entrée, il y aura donc certainement
              * des choses à revoir dans cet algo */
 
+            /*
+             *TODO: en fait on ne change pas vraiment l'arc, on change juste le sommet pointé par l'arc n, donc pas de changement de poids
+             */
+
             CycleEulerien ret = CycleEulerien(cycle);
             Arete<ArcCost,VertexType>* first = ret.arcsList->randomElement();
             Arete<ArcCost,VertexType>* second = ret.arcsList->randomElement();
@@ -120,22 +124,24 @@ public:
             Sommet<VertexType>* C = first->fin;
             first->fin = second->debut;
 
+
             //On trouve le chemin de B vers C et on l'inverse
             invert_path(ret.arcsList,*second->debut,*C);
+            //invert(ret.arcsList,second,C);
 
             //On change A->B et B->D en A->B et C->D
             second->fin = C;
             //cout << "cycle sortie: " << ret.arcsList;
 
-            cycle.toFile("cycleEndit" + to_string(first->clef) +to_string(second->clef), "b", "c", "d");
-            ret.toFile("retEndit" + to_string(first->clef) +to_string(second->clef), "b", "c", "d");
+          //  cycle.toFile("cycleEndit" + to_string(first->clef) +to_string(second->clef), "b", "c", "d");
+           // ret.toFile("retEndit" + to_string(first->clef) +to_string(second->clef), "b", "c", "d");
 
 
             return ret;
         }
 
 
-
+/*
         bool containsArc(const Arete<ArcCost,VertexType> &arete){
             Arete<ArcCost, VertexType>* inv = new Arete<ArcCost, VertexType>(arete.clef,arete.fin,arete.debut,arete.valeur);
             bool ret =     PElement<Arete<ArcCost, VertexType> >::appartient(&arete,arcsList)
@@ -143,6 +149,7 @@ public:
             delete inv;
             return ret;
         }
+        */
 
         /**
          * comme on est dans un cycle, pas de detection des boucles et autres, on avance juste jusqu'a arrivé au point voulu.
@@ -152,25 +159,30 @@ public:
          * @param to
          * @return
          */
-        static void invert_path(PElement< Arete<ArcCost, VertexType> >* iterator,const Sommet<VertexType> &from,const Sommet<VertexType> &to){
+        static void invert_path(PElement< Arete<ArcCost, VertexType> >* iterator, Sommet<VertexType> &from, Sommet<VertexType> &to){
 
             PElement< Arete<ArcCost, VertexType> >*first = iterator;
-            short count = 0;
+            //short count = 0;
             //On atteind le point from
             for(; iterator->valeur->debut->valeur != from.valeur ; iterator = iterator->suivant);
 
 
+
             //On inverse tous les arcs jusqu'a ce qu'on tombe sur l'arc qui fini en to
-            Sommet<VertexType>* tmp;
+            invert(first,*iterator->valeur,to);
+            /*
+            Arete<ArcCost,VertexType>* tmp;
             while(true){
-                tmp = iterator->valeur->debut;
-                iterator->valeur->debut = iterator->valeur->fin;
-                iterator->valeur->fin = tmp;
-                tmp = iterator->valeur->debut;
-                iterator = iterator->suivant;//pas de problème puisque le pointeur est une copie
-                if(tmp->valeur == to.valeur){
+                tmp = iterator->valeur->fin;
+                iterator->valeur->fin = iterator->valeur->debut;
+                iterator->valeur->debut = tmp;
+               // iterator->valeur = getExactAreteParSommets(iterator->valeur->fin,iterator->valeur->debut); TODO: utiliser ça pour changer pour de vrai ^^
+
+                if(iterator->valeur->debut->valeur == to.valeur){
+                    iterator = first; // on a changé les aretes, on remet le pointeur sur le premier élément pour ne pas tronquer le cycle
                     break;
                 }
+                iterator = iterator->suivant;//pas de problème puisque le pointeur est une copie
                 if(iterator == NULL){
                     iterator = first;//un tour de boucle
                     count++;
@@ -179,10 +191,48 @@ public:
                     }
                 }
             }
-            iterator = first;
+            */
         }
 
+
+
+
+
+
+
+
+        static void invert(PElement<Arete<ArcCost,VertexType> > * list, Arete<ArcCost,VertexType> &current,Sommet<VertexType> &fin){
+
+
+            if(current.fin->valeur != fin.valeur){
+                cout << "objectif: " << fin.valeur << " pour l'instant: " << current.fin->valeur;
+                PElement<Arete<ArcCost,VertexType> >* first = list;
+                for(;first->valeur->debut->valeur == current.fin->valeur; first = first->suivant);
+                invert(list,*first->valeur,fin);
+                delete first;
+            }
+
+            Sommet<VertexType>* tmp = list->valeur->fin;
+            list->valeur->fin = list->valeur->debut;
+            list->valeur->debut = tmp;
+            delete tmp;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     };
+
 
 
     PElement< Arete<ArcCost, VertexType> > * lAretes; // liste d'arêtes
@@ -207,7 +257,7 @@ public:
                 last = sommet;
                 PElement<Sommet<VertexType> > ::retire(last,remaining);
         }
-        c.insert(*getAreteParSommets(last,lSommets->valeur)); //Pour refermer la boucle
+        c.insert(*getExactAreteParSommets(last,lSommets->valeur)); //Pour refermer la boucle
         return c;
     }
 
