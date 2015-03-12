@@ -119,18 +119,16 @@ public:
             cycle.toFile("cycleInit" + to_string(first->clef) +to_string(second->clef), "b", "c", "d");
             ret.toFile("retInit" + to_string(first->clef) +to_string(second->clef), "b", "c", "d");
 
-            cout << *first << endl << *second << endl << endl;
+            //On trouve le chemin de B vers C et on l'inverse
+            invert_path(first->fin, second->debut, ret);
+
             //On change A->C et B->D en A->B et B->D
             Sommet<VertexType>* C = first->fin;
             first->fin = second->debut;
 
 
-            //On trouve le chemin de B vers C et on l'inverse
-            invert_path(ret.arcsList,*second->debut,*C);
-            //invert(ret.arcsList,second,C);
-
             //On change A->B et B->D en A->B et C->D
-            second->fin = C;
+            second->debut = C;
             //cout << "cycle sortie: " << ret.arcsList;
 
           //  cycle.toFile("cycleEndit" + to_string(first->clef) +to_string(second->clef), "b", "c", "d");
@@ -159,78 +157,24 @@ public:
          * @param to
          * @return
          */
-        static void invert_path(PElement< Arete<ArcCost, VertexType> >* iterator, Sommet<VertexType> &from, Sommet<VertexType> &to){
-
-            PElement< Arete<ArcCost, VertexType> >*first = iterator;
-            //short count = 0;
+        static void invert_path( Sommet<VertexType>* from,const Sommet<VertexType> *to, const CycleEulerien &c){
+            PElement< Arete<ArcCost, VertexType> >* temp = c.arcsList;
             //On atteind le point from
-            for(; iterator->valeur->debut->valeur != from.valeur ; iterator = iterator->suivant);
+            for(; temp->valeur->debut->valeur != from->valeur; temp = temp->suivant);
 
-
-
-            //On inverse tous les arcs jusqu'a ce qu'on tombe sur l'arc qui fini en to
-            invert(first,*iterator->valeur,to);
-            /*
-            Arete<ArcCost,VertexType>* tmp;
-            while(true){
-                tmp = iterator->valeur->fin;
-                iterator->valeur->fin = iterator->valeur->debut;
-                iterator->valeur->debut = tmp;
-               // iterator->valeur = getExactAreteParSommets(iterator->valeur->fin,iterator->valeur->debut); TODO: utiliser ça pour changer pour de vrai ^^
-
-                if(iterator->valeur->debut->valeur == to.valeur){
-                    iterator = first; // on a changé les aretes, on remet le pointeur sur le premier élément pour ne pas tronquer le cycle
-                    break;
-                }
-                iterator = iterator->suivant;//pas de problème puisque le pointeur est une copie
-                if(iterator == NULL){
-                    iterator = first;//un tour de boucle
-                    count++;
-                    if(count>1){
-                        throw Exception("plus d'un tour de boucle !");
-                    }
-                }
+            // récursivité
+            Sommet<VertexType>* tmp;
+            if ( temp->valeur->fin->valeur == to->valeur) {
+                tmp = temp->valeur->debut;
+                temp->valeur->debut = temp->valeur->fin;
+                temp->valeur->fin = tmp;
+            } else {
+                invert_path(temp->valeur->fin, to, c); // récursivité
+                tmp = temp->valeur->debut;
+                temp->valeur->debut = temp->valeur->fin;
+                temp->valeur->fin = tmp;
             }
-            */
         }
-
-
-
-
-
-
-
-
-        static void invert(PElement<Arete<ArcCost,VertexType> > * list, Arete<ArcCost,VertexType> &current,Sommet<VertexType> &fin){
-
-
-            if(current.fin->valeur != fin.valeur){
-                cout << "objectif: " << fin.valeur << " pour l'instant: " << current.fin->valeur;
-                PElement<Arete<ArcCost,VertexType> >* first = list;
-                for(;first->valeur->debut->valeur == current.fin->valeur; first = first->suivant);
-                invert(list,*first->valeur,fin);
-                delete first;
-            }
-
-            Sommet<VertexType>* tmp = list->valeur->fin;
-            list->valeur->fin = list->valeur->debut;
-            list->valeur->debut = tmp;
-            delete tmp;
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     };
 
 
