@@ -24,11 +24,23 @@ public :
      * */
     PElement( T * v, PElement<T> * s ): valeur(v),suivant(s){}
 
+
+
+    PElement(const PElement<T> &it):
+        valeur(new T(*it.valeur)),
+        suivant(NULL)
+    {
+        if(it.suivant != NULL){
+            suivant = new PElement<T>(*it.suivant);
+        }
+    }
+
+
     /**
      * crée une copie de s
      */
-    PElement(const PElement<T>* it):
-        suivant(NULL)
+/*    PElement(const PElement<T>* it):
+        suivant(
     {
         PElement<T>* this2 = this;
          while(it != NULL){
@@ -37,6 +49,7 @@ public :
          }
     }
 
+    /*
     PElement<T>* copy(){
         PElement<T>* this2 = this;
         PElement<T>* first = new PElement<T>(this2->valeur, NULL);
@@ -49,6 +62,7 @@ public :
         }
         return first;
     }
+    */
 
     static const string toString(const PElement<T> * p,
                         const char * debut="( ",
@@ -69,14 +83,15 @@ public :
           return 1 + PElement<T>::taille(l->suivant);
     }
 
-    T* randomElement()const{
+    pair<T*,int> randomElement()const{
         int nbIte = rand() % PElement<T>::taille(this);
         const PElement<T>* ret = this;
-        for( int i = 0; i <nbIte ; i++,ret = ret->suivant);
+        int i = 0;
+        for( ; i <nbIte ; i++,ret = ret->suivant);
         if(ret == NULL){
             throw Exception("Huston on a un problème");
         }
-        return ret->valeur;
+        return pair<T*,int>(ret->valeur,i);
     }
 
 
@@ -164,7 +179,9 @@ public :
         else
            if (a == l->valeur)
               {
-              PElement<T> * r = l; l = l->suivant; delete r;
+              PElement<T> * r = l;
+              l = l->suivant;
+              delete r;
               return true;
               }
            else

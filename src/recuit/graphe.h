@@ -24,23 +24,18 @@ public:
     public:
 
         PElement< Arete<ArcCost, VertexType> >* arcsList;
+        const Graphe* associatedGraphe;
 
         void insert(const Arete<ArcCost, VertexType> & arete){
             for(PElement<Arete<ArcCost, VertexType> >* it = arcsList; it != NULL; it = it->suivant){
-                if(arete.debut->valeur == it->valeur->debut->valeur
-                   || arete.fin->valeur == it->valeur->fin->valeur){
+                if(arete.debut->clef == it->valeur->debut->clef
+                   || arete.fin->clef == it->valeur->fin->clef){
                     throw Exception( "l'arete :" + PElement<Arete<ArcCost, VertexType> >::toString(it) + "est déjà présente dans ce cycle");
                 }
             }
             arcsList = new PElement<Arete<ArcCost, VertexType> >(new Arete<ArcCost,VertexType>(arete), arcsList);
         }
 
-        /*
-        void insert(const Arete<ArcCost, VertexType> & arete,PElement<Arete<ArcCost, VertexType> >* next ){
-            insert(arete);
-            arcsList->suivant = next;
-        }
-        */
 
         void toFile(string filename, string titre, string legende, string resume) const{
             ofstream fichier("../../docs/bsplines/" + filename + ".txt", ios::out | ios::trunc);
@@ -72,16 +67,19 @@ public:
             } else cerr << "Impossible d'ouvrir le fichier !" << endl;
         }
 
-        CycleEulerien():arcsList(NULL){}
+        CycleEulerien(const Graphe *g):arcsList(NULL),associatedGraphe(g){}
 
         /**
          * @brief CycleEulerien construit un cycle à partir d'un autre, pas de copie des éléments
          * @param c
          */
         CycleEulerien(const CycleEulerien &c):
-            arcsList(NULL)
+            arcsList(NULL),
+            associatedGraphe(c.associatedGraphe)
         {
-            arcsList = c.arcsList->copy();
+            if(c.arcsList != NULL)
+                arcsList = new PElement<Arete<ArcCost,VertexType> >(*c.arcsList);
+            //arcsList = c.arcsList->copy();
             /*
             for(PElement< Arete<ArcCost, VertexType> >* p = c.arcsList; p != NULL ; p = p->suivant){
                 insert(p->valeur);
@@ -103,32 +101,48 @@ public:
              */
 
             CycleEulerien ret = CycleEulerien(cycle);
-            Arete<ArcCost,VertexType>* first = ret.arcsList->randomElement();
-            Arete<ArcCost,VertexType>* second = ret.arcsList->randomElement();
+            pair<Arete<ArcCost,VertexType>*,int> first = ret.arcsList->randomElement();
+            pair<Arete<ArcCost,VertexType>*,int> second = ret.arcsList->randomElement();
             /*TODO vérif */
-            while(   second->fin->valeur    ==  first->debut->valeur
-                  || second->debut->valeur  ==  first->fin->valeur
-                  || second->debut->valeur == first->debut->valeur
-                  || second->fin->valeur == first->fin->valeur){
+            while(   second.first->fin->clef    ==  first.first->debut->clef
+                  || second.first->debut->clef  ==  first.first->fin->clef
+                  || second.first->debut->clef == first.first->debut->clef
+                  || second.first->fin->clef == first.first->fin->clef){
 
                 second = ret.arcsList->randomElement();
             }
 
             //On viens de tirer deux arcs au hasard qui ne sont pas l'un à la suite de l'autre
 
-            cycle.toFile("cycleInit" + to_string(first->clef) +to_string(second->clef), "b", "c", "d");
-            ret.toFile("retInit" + to_string(first->clef) +to_string(second->clef), "b", "c", "d");
+            //cycle.toFile("cycleInit" + to_string(first->clef) +to_string(second->clef), "b", "c", "d");
+            //ret.toFile("retInit" + to_string(first->clef) +to_string(second->clef), "b", "c", "d");
 
             //On trouve le chemin de B vers C et on l'inverse
-            invert_path(first->fin, second->debut, ret);
+            invert_path(first.first->fin, second.first->debut, ret);
 
             //On change A->C et B->D en A->B et B->D
-            Sommet<VertexType>* C = first->fin;
-            first->fin = second->debut;
-
+            Sommet<VertexType>* C = first.first->fin;
+           // first->fin = second->debut;
+            PElement<Arete< ArcCost, VertexType > > *tmp = ret.arcsList;
+            for(int i = 0 ; i < first.second; i++){
+                tmp = tmp->suivant;
+            }
+            tmp->valeur = ret.associatedGraphe->getExactAreteParSommets(first.first->debut,second.first->debut);
+            if(tmp->valeur == NULL){
+                throw Exception("lol");
+            }
 
             //On change A->B et B->D en A->B et C->D
-            second->debut = C;
+          //  second->debut = C;
+            tmp = ret.arcsList;
+            for(int i = 0; i < second.second; i++){
+                tmp = tmp->suivant;
+            }
+            tmp->valeur = ret.associatedGraphe->getExactAreteParSommets(C,second.first->fin);
+            if(tmp->valeur == NULL){
+                throw Exception("lol");
+            }
+           // delete tmp;
             //cout << "cycle sortie: " << ret.arcsList;
 
           //  cycle.toFile("cycleEndit" + to_string(first->clef) +to_string(second->clef), "b", "c", "d");
@@ -164,7 +178,7 @@ public:
 
             // récursivité
             Sommet<VertexType>* tmp;
-            if ( temp->valeur->fin->valeur == to->valeur) {
+            if ( temp->valeur->fin->clef == to->clef) {
                 tmp = temp->valeur->debut;
                 temp->valeur->debut = temp->valeur->fin;
                 temp->valeur->fin = tmp;
@@ -187,12 +201,13 @@ public:
     CycleEulerien getFirstCycle()const{
         /* TODO achtung graphe avec un élément */
         /* TODO vérif que ça sort bien un cycle hamiltonien */
-        CycleEulerien c;
-        Sommet<VertexType>* last = lSommets->valeur;
-        PElement<Sommet<VertexType> >* remaining = lSommets->copy();
+        CycleEulerien c(this);
+        PElement<Sommet<VertexType> >* remaining = new PElement<Sommet<VertexType> >(*lSommets); //lSommets->copy();
+        Sommet<VertexType>* last = remaining->randomElement().first;
+        Sommet<VertexType>* first = last;
         PElement<Sommet<VertexType> > ::retire(last,remaining); //enlève le premier sommet TODO: attention que lsommet ne soit pas modifié !
-        for (int i = 1; i < PElement<Sommet<VertexType> >::taille(lSommets); i++){
-                Sommet<VertexType>* sommet = remaining->randomElement();
+        while(PElement<Sommet<VertexType> >::taille(remaining) > 0  ){
+                Sommet<VertexType>* sommet = remaining->randomElement().first;
                 if(sommet->valeur == last->valeur){
                     throw Exception("il y a une boucle parmi les arcs possible");
                 }
@@ -201,7 +216,7 @@ public:
                 last = sommet;
                 PElement<Sommet<VertexType> > ::retire(last,remaining);
         }
-        c.insert(*getExactAreteParSommets(last,lSommets->valeur)); //Pour refermer la boucle
+        c.insert(*getExactAreteParSommets(last,first)); //Pour refermer la boucle
         return c;
     }
 
@@ -356,8 +371,8 @@ template <class ArcCost, class VertexType>
 Arete<ArcCost, VertexType> * Graphe<ArcCost, VertexType>::getExactAreteParSommets(const Sommet<VertexType> * s1, const Sommet<VertexType> * s2) const{
     PElement<Arete<ArcCost, VertexType> > * l;
     for (l = this->lAretes; l; l = l->suivant) {
-        if (l->valeur->debut == s1
-             && l->valeur->fin == s2){
+        if (l->valeur->debut->clef == s1->clef
+             && l->valeur->fin->clef == s2->clef){
             return l->valeur;
         }
     }
@@ -464,9 +479,6 @@ void Graphe<S, ValueData>::ServeurSend(const CycleEulerien& c) {
 }
 
 
-/**
- *Si l'arc manquant a un arc "opposé", on lui donne la valeur de cet arc opposé, sinon +infini
- */
 template<class ArcCost,class VertexType>
 void Graphe<ArcCost,VertexType>::add_missing_arcs(const ArcCost &infini){
 
