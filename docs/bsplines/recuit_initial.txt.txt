@@ -8,17 +8,17 @@ nombre de points remarquables = 0
 nombre de courbes = 4
 couleur =  green
 nombre de points = 2
-( 3, 0)
 ( 4, 1)
-couleur =  green
-nombre de points = 2
-( 4, 1)
-( 3, 2)
-couleur =  green
-nombre de points = 2
-( 3, 2)
 ( 2, 2)
 couleur =  green
 nombre de points = 2
 ( 2, 2)
 ( 1, 1)
+couleur =  green
+nombre de points = 2
+( 3, 2)
+( 1, 1)
+couleur =  green
+nombre de points = 2
+( 3, 0)
+( 3, 2)
