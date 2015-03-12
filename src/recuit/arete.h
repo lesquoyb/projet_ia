@@ -48,8 +48,8 @@ Arete<S,T>::operator string () const {
 	ostringstream oss;
 	oss << "Arete  (" << endl;
 	oss << GElement::operator string() << endl;
-	oss << "clef debut = " << debut->clef << endl;
-	oss << "clef fin = " << fin->clef << endl;
+    oss << "clef debut = " << debut->valeur << endl;
+    oss << "clef fin = " << fin->valeur << endl;
 	oss << "v = " << valeur << endl;
 	oss << ")";
 	return oss.str();

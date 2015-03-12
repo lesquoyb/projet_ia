@@ -54,18 +54,21 @@ void vrai_test(){
 
     for( PElement<Sommet<ValueData> >* i = graphe.lSommets ;  i != NULL ; i = i->suivant ){
         for(PElement<Sommet<ValueData> >* j = i->suivant ;  j != NULL ; j = j->suivant){
-            graphe.creeArete(i->valeur,j->valeur,rand() % 50);
+            graphe.creerLien(i->valeur,j->valeur, double(rand() % 50));
         }
     }
 
+   /*ne sers à rien mfker */
     graphe.add_missing_arcs(DBL_MAX); // On rend le graphe complet
+
     Graphe<double,ValueData>::CycleEulerien solutionInitiale = graphe.getFirstCycle();
-    solutionInitiale.toFile("recuit_initial.txt", "a", "b", "c");
+
+    //solutionInitiale.toFile("recuit_initial.txt", "a", "b", "c");
 
     cout << "cout solution init: " << cout_cycle(solutionInitiale) << endl;
     SolutionCout< Graphe<double,ValueData>::CycleEulerien > solution = recuitSimule(temp_init, temp_final, nb_max_iteration, nb_max_succes, solutionInitiale, &cout_cycle,&changement_aleatoire, &decrement);
 
-    solution.solution.toFile("recuit_final.txt", "a", "b", "c");
+  //  solution.solution.toFile("recuit_final.txt", "a", "b", "c");
     cout << "cout de la solution: " << solution.cout << endl;
     //cout << "meilleur chemin: " << solution.solution.arcsList << endl;
 

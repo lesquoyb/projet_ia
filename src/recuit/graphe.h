@@ -26,14 +26,21 @@ public:
         PElement< Arete<ArcCost, VertexType> >* arcsList;
 
         void insert(const Arete<ArcCost, VertexType> & arete){
-
+            for(PElement<Arete<ArcCost, VertexType> >* it = arcsList; it != NULL; it = it->suivant){
+                if(arete.debut->valeur == it->valeur->debut->valeur
+                   || arete.fin->valeur == it->valeur->fin->valeur){
+                    throw Exception( "l'arete :" + PElement<Arete<ArcCost, VertexType> >::toString(it) + "est déjà présente dans ce cycle");
+                }
+            }
             arcsList = new PElement<Arete<ArcCost, VertexType> >(new Arete<ArcCost,VertexType>(arete), arcsList);
         }
 
+        /*
         void insert(const Arete<ArcCost, VertexType> & arete,PElement<Arete<ArcCost, VertexType> >* next ){
             insert(arete);
             arcsList->suivant = next;
         }
+        */
 
         void toFile(string filename, string titre, string legende, string resume){
             ofstream fichier("../../docs/bsplines/" + filename + ".txt", ios::out | ios::trunc);
@@ -74,9 +81,11 @@ public:
         CycleEulerien(const CycleEulerien &c):
             arcsList(NULL)
         {
+            arcsList = c.arcsList->copy();
+            /*
             for(PElement< Arete<ArcCost, VertexType> >* p = c.arcsList; p != NULL ; p = p->suivant){
                 insert(p->valeur);
-            }
+            }*/
         }
 
 
@@ -94,7 +103,9 @@ public:
             Arete<ArcCost,VertexType>* second = ret.arcsList->randomElement();
             /*TODO vérif */
             while(   second->fin->valeur    ==  first->debut->valeur
-                  || second->debut->valeur  ==  first->fin->valeur){
+                  || second->debut->valeur  ==  first->fin->valeur
+                  || second->debut->valeur == first->debut->valeur
+                  || second->fin->valeur == first->fin->valeur){
 
                 second = ret.arcsList->randomElement();
             }
@@ -107,7 +118,7 @@ public:
             first->fin = second->debut;
 
             //On trouve le chemin de B vers C et on l'inverse
-            invert_path(cycle.arcsList,*second->debut,*C);
+            invert_path(ret.arcsList,*second->debut,*C);
 
             //On change A->B et B->D en A->B et C->D
             second->fin = C;
@@ -115,6 +126,15 @@ public:
             return ret;
         }
 
+
+
+        bool containsArc(const Arete<ArcCost,VertexType> &arete){
+            Arete<ArcCost, VertexType>* inv = new Arete<ArcCost, VertexType>(arete.clef,arete.fin,arete.debut,arete.valeur);
+            bool ret =     PElement<Arete<ArcCost, VertexType> >::appartient(&arete,arcsList)
+                        || PElement<Arete<ArcCost, VertexType> >::appartient(inv,arcsList);
+            delete inv;
+            return ret;
+        }
 
         /**
          * comme on est dans un cycle, pas de detection des boucles et autres, on avance juste jusqu'a arrivé au point voulu.
@@ -129,9 +149,10 @@ public:
             PElement< Arete<ArcCost, VertexType> >*first = iterator;
             short count = 0;
             //On atteind le point from
-            for(; iterator->valeur->debut->valeur == from.valeur ; iterator = iterator->suivant);
-            //On inverse tous les arcs jusqu'a ce qu'on tombe sur l'arc qui fini en to
+            for(; iterator->valeur->debut->valeur != from.valeur ; iterator = iterator->suivant);
 
+
+            //On inverse tous les arcs jusqu'a ce qu'on tombe sur l'arc qui fini en to
             Sommet<VertexType>* tmp;
             while(true){
                 tmp = iterator->valeur->debut;
@@ -139,7 +160,7 @@ public:
                 iterator->valeur->fin = tmp;
                 tmp = iterator->valeur->debut;
                 iterator = iterator->suivant;//pas de problème puisque le pointeur est une copie
-                if(tmp->valeur != to.valeur){
+                if(tmp->valeur == to.valeur){
                     break;
                 }
                 if(iterator == NULL){
@@ -150,6 +171,7 @@ public:
                     }
                 }
             }
+            iterator = first;
         }
 
     };
@@ -172,13 +194,21 @@ public:
                 if(sommet->valeur == last->valeur){
                     throw Exception("il y a une boucle parmi les arcs possible");
                 }
-                c.insert(*(getAreteParSommets(last,sommet)));
+
+                c.insert(*(getExactAreteParSommets(last,sommet)));
                 last = sommet;
                 PElement<Sommet<VertexType> > ::retire(last,remaining);
         }
-       // c.insert(*getAreteParSommets(last,lSommets->valeur)); //Pour refermer la boucle
+        c.insert(*getAreteParSommets(last,lSommets->valeur)); //Pour refermer la boucle
         return c;
 	}
+
+
+    void creerLien(Sommet<VertexType> *debut,Sommet<VertexType> *fin, const ArcCost &cost){
+        creeArete(debut,fin,cost);
+        creeArete(fin,debut,cost);
+    }
+
 
 	Graphe();
 	Graphe(const Graphe<ArcCost, VertexType> & graphe);
@@ -193,7 +223,7 @@ public:
 
     void add_missing_arcs(const ArcCost &infini);
 
-    bool containsArc(const Arete<ArcCost,VertexType> &a);
+   // bool containsArc(const Arete<ArcCost,VertexType> &a);
 
 	Sommet<VertexType> * creeSommet(const VertexType & info);
 
@@ -222,6 +252,9 @@ public:
 	*
 	* */
 	Arete<ArcCost, VertexType> * getAreteParSommets(const Sommet<VertexType> * s1, const Sommet<VertexType> * s2) const;
+
+    Arete<ArcCost, VertexType> * getExactAreteParSommets(const Sommet<VertexType> * s1, const Sommet<VertexType> * s2) const;
+
 
     void toFile(string filename, string titre, string legende, string resume);
     void ServeurSend();
@@ -318,6 +351,19 @@ Arete<S, T> * Graphe<S, T>::getAreteParSommets(const Sommet<T> * s1, const Somme
 	return NULL;
 }
 
+template <class ArcCost, class VertexType>
+Arete<ArcCost, VertexType> * Graphe<ArcCost, VertexType>::getExactAreteParSommets(const Sommet<VertexType> * s1, const Sommet<VertexType> * s2) const{
+    PElement<Arete<ArcCost, VertexType> > * l;
+    for (l = this->lAretes; l; l = l->suivant) {
+        if (l->valeur->debut == s1
+             && l->valeur->fin == s2){
+            return l->valeur;
+        }
+    }
+    return NULL;
+}
+
+
 
 // Retourne la liste des voisins d'un Sommet => Pair(Sommet - Arete)
 template <class S, class T>
@@ -397,24 +443,25 @@ void Graphe<S, ValueData>::ServeurSend() {
     Connexion::push();
 }
 
+
+/**
+ *Si l'arc manquant a un arc "opposé", on lui donne la valeur de cet arc opposé, sinon +infini
+ */
 template<class ArcCost,class VertexType>
 void Graphe<ArcCost,VertexType>::add_missing_arcs(const ArcCost &infini){
 
     for(PElement<Sommet<VertexType> >* p = lSommets; p != NULL ; p = p->suivant){
         for(PElement<Sommet<VertexType> >* q = p->suivant; q != NULL; q = q->suivant){
-            Arete<ArcCost,VertexType>* a = new  Arete<ArcCost,VertexType>(prochaineClef,p->valeur,q->valeur,infini);
-            if( ! containsArc(*a) ){
-                lAretes = new PElement<Arete<ArcCost,VertexType> >(a,lAretes);
-                prochaineClef++;
+            if(getAreteParSommets(p->valeur,q->valeur) == NULL){
+                //lAretes = new PElement<Arete<ArcCost,VertexType> >(new  Arete<ArcCost,VertexType>(prochaineClef,p->valeur,q->valeur,infini),lAretes);
+                creerLien(p->valeur,q->valeur,infini);
             }
-            else{
-                delete a;
-            }
-
         }
     }
 }
 
+
+/*
 template<class ArcCost,class VertexType>
 bool Graphe<ArcCost,VertexType>::containsArc(const Arete<ArcCost,VertexType> &a){
     for(PElement<Arete<ArcCost,VertexType> >* ia = lAretes; ia != NULL ; ia = ia->suivant){
@@ -425,7 +472,7 @@ bool Graphe<ArcCost,VertexType>::containsArc(const Arete<ArcCost,VertexType> &a)
     return false;
 }
 
-
+*/
 
 
 
