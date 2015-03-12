@@ -93,6 +93,18 @@ public :
         return appartient(element,list->suivant);
     }
 
+    // vérifie avec l'opérateur ==
+    static bool appartient2(const T * element,const PElement<T> * list){
+        if(list == NULL){
+            return false;
+        }
+        if(*(list->valeur) == *element){
+            return true;
+        }
+        return appartient2(element,list->suivant);
+    }
+
+
     /**
      * efface toute la liste l
      * mais n'efface pas les données *v

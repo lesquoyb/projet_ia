@@ -42,9 +42,9 @@ void vrai_test(){
     int nb_max_iteration = 100;
     int nb_max_succes = 10;
     Graphe<double,ValueData> graphe;
-    ValueData *vA = new ValueData("A", Vecteur2D(1,1)), *vB = new ValueData("B", Vecteur2D(2,2)),
-            *vC = new ValueData("C", Vecteur2D(3,2)), *vD = new ValueData("D", Vecteur2D(4,1)),
-            *vE = new ValueData("E", Vecteur2D(3,0));
+    ValueData *vA = new ValueData("A", Vecteur2D(0,2)), *vB = new ValueData("B", Vecteur2D(4,4)),
+            *vC = new ValueData("C", Vecteur2D(6,4)), *vD = new ValueData("D", Vecteur2D(8,2)),
+            *vE = new ValueData("E", Vecteur2D(6,0));
     graphe.creeSommet(*vA);
     graphe.creeSommet(*vB);
     graphe.creeSommet(*vC);
@@ -63,12 +63,12 @@ void vrai_test(){
 
     Graphe<double,ValueData>::CycleEulerien solutionInitiale = graphe.getFirstCycle();
 
-    //solutionInitiale.toFile("recuit_initial.txt", "a", "b", "c");
+    graphe.toFile("recuit_initial", "a", "b", "c", solutionInitiale);
 
     cout << "cout solution init: " << cout_cycle(solutionInitiale) << endl;
     SolutionCout< Graphe<double,ValueData>::CycleEulerien > solution = recuitSimule(temp_init, temp_final, nb_max_iteration, nb_max_succes, solutionInitiale, &cout_cycle,&changement_aleatoire, &decrement);
 
-  //  solution.solution.toFile("recuit_final.txt", "a", "b", "c");
+    graphe.toFile("recuit_final", "a", "b", "c", solution.solution);
     cout << "cout de la solution: " << solution.cout << endl;
     //cout << "meilleur chemin: " << solution.solution.arcsList << endl;
 
