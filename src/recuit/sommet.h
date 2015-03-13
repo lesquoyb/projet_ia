@@ -13,6 +13,7 @@ public:
 	T valeur;
 	
 	Sommet(const int clef, const T & v): GElement(clef), degre(0), valeur(v){}
+    Sommet(const Sommet<T> &s):GElement(s.clef),degre(s.degre),valeur(s.valeur){}
 	operator string() const;
     bool operator==(const Sommet<T>&) const;
 };
