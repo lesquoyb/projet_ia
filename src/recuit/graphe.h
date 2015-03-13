@@ -15,6 +15,7 @@ class Graphe {
 
 protected:
     int prochaineClef;
+    static int last_cost;
 
 public:
 
@@ -24,6 +25,7 @@ public:
     public:
 
         PElement< Arete<ArcCost, VertexType> >* arcsList;
+        const Graphe<ArcCost, VertexType>* graphe;
 
         void insert(const Arete<ArcCost, VertexType> & arete){
             for(PElement<Arete<ArcCost, VertexType> >* it = arcsList; it != NULL; it = it->suivant){
@@ -72,37 +74,33 @@ public:
             } else cerr << "Impossible d'ouvrir le fichier !" << endl;
         }
 
-        CycleEulerien():arcsList(NULL){}
+        CycleEulerien(const Graphe<ArcCost, VertexType>* g):arcsList(NULL), graphe(g){}
 
         /**
          * @brief CycleEulerien construit un cycle à partir d'un autre, pas de copie des éléments
          * @param c
          */
-        CycleEulerien(const CycleEulerien &c):
-            arcsList(NULL)
-        {
-            arcsList = c.arcsList->copy();
-            /*
-            for(PElement< Arete<ArcCost, VertexType> >* p = c.arcsList; p != NULL ; p = p->suivant){
-                insert(p->valeur);
-            }*/
+        CycleEulerien(const CycleEulerien &c): arcsList(c.arcsList->copy()), graphe(c.graphe) {}
+
+
+        double cout_cycle2(const CycleEulerien &c) const{
+            double total = 0;
+            for (PElement< Arete<ArcCost, VertexType> >* i = c.arcsList; i != NULL; i = i->suivant){
+                if (c.graphe != NULL) total +=  c.graphe->getAreteParSommets(i->valeur->debut, i->valeur->fin)->valeur;
+            }
+            return total;
         }
-
-
 
         CycleEulerien operator =(const CycleEulerien &c){
             return CycleEulerien(c);
         }
 
         static CycleEulerien changement_aleatoire(const CycleEulerien &cycle){
-            /* TODO attention il ne faut surtout pas modifier le cycle d'entrée, il y aura donc certainement
-             * des choses à revoir dans cet algo */
+            cout << to_string(cycle.cout_cycle2(cycle)) << endl;
+            double init_cost = cycle.cout_cycle2(cycle);
 
-            /*
-             *TODO: en fait on ne change pas vraiment l'arc, on change juste le sommet pointé par l'arc n, donc pas de changement de poids
-             */
+            CycleEulerien ret(cycle);
 
-            CycleEulerien ret = CycleEulerien(cycle);
             Arete<ArcCost,VertexType>* first = ret.arcsList->randomElement();
             Arete<ArcCost,VertexType>* second = ret.arcsList->randomElement();
             /*TODO vérif */
@@ -114,26 +112,43 @@ public:
                 second = ret.arcsList->randomElement();
             }
 
-            //On viens de tirer deux arcs au hasard qui ne sont pas l'un à la suite de l'autre
+            system("pause");
 
-            cycle.toFile("cycleInit" + to_string(first->clef) +to_string(second->clef), "b", "c", "d");
-            ret.toFile("retInit" + to_string(first->clef) +to_string(second->clef), "b", "c", "d");
+            ArcCost a;
+            ArcCost b;
+            a = cycle.graphe->getAreteParSommets(first->debut, first->fin)->valeur + cycle.graphe->getAreteParSommets(second->debut, second->fin)->valeur;
+            b = cycle.graphe->getAreteParSommets(first->debut, second->debut)->valeur + cycle.graphe->getAreteParSommets(first->fin, second->fin)->valeur;
+            if (a > b) {
+                cout << "before : " << to_string(init_cost) << endl;
+                cout << "after  : " << to_string(init_cost - a + b) << endl;
 
-            //On trouve le chemin de B vers C et on l'inverse
-            invert_path(first->fin, second->debut, ret);
+                //On trouve le chemin de C vers B et on l'inverse
+                invert_path(first->fin, second->debut, ret);
 
-            //On change A->C et B->D en A->B et B->D
-            Sommet<VertexType>* C = first->fin;
-            first->fin = second->debut;
+                //On change A->C et B->D en A->B et C->D
+                Sommet<VertexType>* C = first->fin;
+                first->fin = second->debut;
+                second->debut = C;
 
+                cout << "Cycle_cost-> " << to_string(cycle.cout_cycle2(cycle)) << endl;
+                cout << "Ret_cost  -> " << to_string(cycle.cout_cycle2(ret)) << endl;
 
-            //On change A->B et B->D en A->B et C->D
-            second->debut = C;
-            //cout << "cycle sortie: " << ret.arcsList;
+                /* Partie correcte mais non fonctionnelle
+                Arete<ArcCost,VertexType>* first2 = cycle.graphe->getExactAreteParSommets(first->debut, second->debut);
+                Arete<ArcCost,VertexType>* second2 = cycle.graphe->getExactAreteParSommets(first->fin, second->fin);
 
-          //  cycle.toFile("cycleEndit" + to_string(first->clef) +to_string(second->clef), "b", "c", "d");
-           // ret.toFile("retEndit" + to_string(first->clef) +to_string(second->clef), "b", "c", "d");
+                PElement< Arete<ArcCost, VertexType> >* temp = ret.arcsList;
+                PElement< Arete<ArcCost, VertexType> >* temp2 = ret.arcsList;
+                //On atteind le point from
+                for(; temp->valeur != first; temp = temp->suivant);
+                for(; temp2->valeur != second; temp2 = temp2->suivant);
 
+                temp->valeur = first2;
+                temp2->valeur = second2;
+                */
+                Connexion::commit("o{clear}", true);
+                cycle.graphe->ServeurSend(ret);
+            }
 
             return ret;
         }
@@ -160,6 +175,7 @@ public:
         static void invert_path( Sommet<VertexType>* from,const Sommet<VertexType> *to, const CycleEulerien &c){
             PElement< Arete<ArcCost, VertexType> >* temp = c.arcsList;
             //On atteind le point from
+
             for(; temp->valeur->debut->valeur != from->valeur; temp = temp->suivant);
 
             // récursivité
@@ -187,7 +203,7 @@ public:
     CycleEulerien getFirstCycle()const{
         /* TODO achtung graphe avec un élément */
         /* TODO vérif que ça sort bien un cycle hamiltonien */
-        CycleEulerien c;
+        CycleEulerien c(this);
         Sommet<VertexType>* last = lSommets->valeur;
         PElement<Sommet<VertexType> >* remaining = lSommets->copy();
         PElement<Sommet<VertexType> > ::retire(last,remaining); //enlève le premier sommet TODO: attention que lsommet ne soit pas modifié !
@@ -258,7 +274,7 @@ public:
 
 
     void toFile(string filename, string titre, string legende, string resume, const CycleEulerien&);
-    void ServeurSend(const CycleEulerien&);
+    void ServeurSend(const CycleEulerien&) const;
 
 
 };
@@ -434,7 +450,7 @@ void Graphe<S, ValueData>::toFile(string filename, string titre, string legende,
 
 
 template <class S, class ValueData>
-void Graphe<S, ValueData>::ServeurSend(const CycleEulerien& c) {
+void Graphe<S, ValueData>::ServeurSend(const CycleEulerien& c) const {
     PElement<Arete<double,ValueData> > *temp = lAretes;
     string couleur;
     while (temp != NULL) {
