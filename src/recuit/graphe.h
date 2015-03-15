@@ -48,11 +48,6 @@ public:
                 fichier << "coin bas gauche de la figure sur l'écran en coordonnées monde = ( -1, -1)" << endl;
                 fichier << "coin haut droit de la figure sur l'écran en coordonnées monde = ( 10, 10)" << endl;
                 fichier << "nombre de points remarquables = 0" << endl;
-                /*PElement<Sommet<ValueData> > *tempsom = lSommets;
-                while (tempsom != NULL) {
-                    fichier << "point remarquable = 2 black (" << tempsom->valeur->valeur.position.x << "," << tempsom->valeur->valeur.position.y << ") " << tempsom->valeur->valeur.nom << endl;
-                    tempsom = tempsom->suivant;
-                }*/
 
                 fichier << "nombre de courbes = " << arcsList->taille(arcsList) << endl;
                 PElement<Arete<ArcCost,VertexType> > *temp = arcsList;
@@ -79,31 +74,15 @@ public:
         {
             if(c.arcsList != NULL)
                 arcsList = new PElement<Arete<ArcCost,VertexType> >(*c.arcsList);
-            //arcsList = c.arcsList->copy();
-            /*
-            for(PElement< Arete<ArcCost, VertexType> >* p = c.arcsList; p != NULL ; p = p->suivant){
-                insert(p->valeur);
-            }*/
         }
 
-
-
-        CycleEulerien operator =(const CycleEulerien &c){
-            return CycleEulerien(c);
-        }
 
         static CycleEulerien changement_aleatoire(const CycleEulerien &cycle){
-            /* TODO attention il ne faut surtout pas modifier le cycle d'entrée, il y aura donc certainement
-             * des choses à revoir dans cet algo */
-
-            /*
-             *TODO: en fait on ne change pas vraiment l'arc, on change juste le sommet pointé par l'arc n, donc pas de changement de poids
-             */
 
             CycleEulerien ret = CycleEulerien(cycle);
             pair<Arete<ArcCost,VertexType>*,int> first = ret.arcsList->randomElement();
             pair<Arete<ArcCost,VertexType>*,int> second = ret.arcsList->randomElement();
-            /*TODO vérif */
+
             while(   second.first->fin->clef    ==  first.first->debut->clef
                   || second.first->debut->clef  ==  first.first->fin->clef
                   || second.first->debut->clef == first.first->debut->clef
@@ -114,54 +93,33 @@ public:
 
             //On viens de tirer deux arcs au hasard qui ne sont pas l'un à la suite de l'autre
 
-            //cycle.toFile("cycleInit" + to_string(first->clef) +to_string(second->clef), "b", "c", "d");
-            //ret.toFile("retInit" + to_string(first->clef) +to_string(second->clef), "b", "c", "d");
-
             //On trouve le chemin de B vers C et on l'inverse
             invert_path(first.first->fin, second.first->debut, ret);
 
             //On change A->C et B->D en A->B et B->D
             Sommet<VertexType>* C = first.first->fin;
-           // first->fin = second->debut;
             PElement<Arete< ArcCost, VertexType > > *tmp = ret.arcsList;
-            for(int i = 0 ; i < first.second; i++){
-                tmp = tmp->suivant;
-            }
+            for(int i = 0 ; i < first.second; i++,tmp = tmp->suivant);
             tmp->valeur = ret.associatedGraphe->getExactAreteParSommets(first.first->debut,second.first->debut);
             if(tmp->valeur == NULL){
-                throw Exception("lol");
+                throw Exception("pas normal");
             }
 
             //On change A->B et B->D en A->B et C->D
-          //  second->debut = C;
             tmp = ret.arcsList;
             for(int i = 0; i < second.second; i++){
                 tmp = tmp->suivant;
             }
             tmp->valeur = ret.associatedGraphe->getExactAreteParSommets(C,second.first->fin);
             if(tmp->valeur == NULL){
-                throw Exception("lol");
+                throw Exception("pas normal");
             }
-           // delete tmp;
-            //cout << "cycle sortie: " << ret.arcsList;
-
-          //  cycle.toFile("cycleEndit" + to_string(first->clef) +to_string(second->clef), "b", "c", "d");
-           // ret.toFile("retEndit" + to_string(first->clef) +to_string(second->clef), "b", "c", "d");
-
 
             return ret;
         }
 
 
-/*
-        bool containsArc(const Arete<ArcCost,VertexType> &arete){
-            Arete<ArcCost, VertexType>* inv = new Arete<ArcCost, VertexType>(arete.clef,arete.fin,arete.debut,arete.valeur);
-            bool ret =     PElement<Arete<ArcCost, VertexType> >::appartient(&arete,arcsList)
-                        || PElement<Arete<ArcCost, VertexType> >::appartient(inv,arcsList);
-            delete inv;
-            return ret;
-        }
-        */
+
 
         /**
          * comme on est dans un cycle, pas de detection des boucles et autres, on avance juste jusqu'a arrivé au point voulu.
@@ -182,13 +140,17 @@ public:
                 tmp = temp->valeur->debut;
                 temp->valeur->debut = temp->valeur->fin;
                 temp->valeur->fin = tmp;
-            } else {
+            }
+            else {
                 invert_path(temp->valeur->fin, to, c); // récursivité
                 tmp = temp->valeur->debut;
                 temp->valeur->debut = temp->valeur->fin;
                 temp->valeur->fin = tmp;
             }
         }
+
+
+
     };
 
 
@@ -199,8 +161,6 @@ public:
 
 
     CycleEulerien getFirstCycle()const{
-        /* TODO achtung graphe avec un élément */
-        /* TODO vérif que ça sort bien un cycle hamiltonien */
         CycleEulerien c(this);
         PElement<Sommet<VertexType> >* remaining = new PElement<Sommet<VertexType> >(*lSommets); //lSommets->copy();
         Sommet<VertexType>* last = remaining->randomElement().first;
@@ -208,7 +168,7 @@ public:
         PElement<Sommet<VertexType> > ::retire(last,remaining); //enlève le premier sommet TODO: attention que lsommet ne soit pas modifié !
         while(PElement<Sommet<VertexType> >::taille(remaining) > 0  ){
                 Sommet<VertexType>* sommet = remaining->randomElement().first;
-                if(sommet->valeur == last->valeur){
+                if(sommet->clef == last->clef){
                     throw Exception("il y a une boucle parmi les arcs possible");
                 }
 
@@ -238,8 +198,6 @@ public:
     int nombreAretes() const;
 
     void add_missing_arcs(const ArcCost &infini);
-
-   // bool containsArc(const Arete<ArcCost,VertexType> &a);
 
     Sommet<VertexType> * creeSommet(const VertexType & info);
 
@@ -492,19 +450,6 @@ void Graphe<ArcCost,VertexType>::add_missing_arcs(const ArcCost &infini){
     }
 }
 
-
-/*
-template<class ArcCost,class VertexType>
-bool Graphe<ArcCost,VertexType>::containsArc(const Arete<ArcCost,VertexType> &a){
-    for(PElement<Arete<ArcCost,VertexType> >* ia = lAretes; ia != NULL ; ia = ia->suivant){
-        if(ia->valeur->estEgal(a.debut,a.fin)){
-            return true;
-        }
-    }
-    return false;
-}
-
-*/
 
 
 
