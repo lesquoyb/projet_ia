@@ -13,6 +13,7 @@
 #include "vector2d.h"
 #include "recuit_simule_d2.h"
 #include "valuedata.h"
+#include "connexion.h"
 
 
 
@@ -23,7 +24,7 @@ double decrement(const double &old_temp){return old_temp-1;}
 double cout_cycle(const Graphe<double,ValueData>::CycleEulerien &c){
     double total = 0;
     for (PElement< Arete<double, ValueData> >* i = c.arcsList; i != NULL; i = i->suivant){
-        total += i->valeur->valeur;
+        if (c.associatedGraphe != NULL) total +=  c.associatedGraphe->getAreteParSommets(i->valeur->debut, i->valeur->fin)->valeur;
     }
     return total;
 }
@@ -35,7 +36,7 @@ const Graphe<double,ValueData>::CycleEulerien changement_aleatoire(const Graphe<
 }
 
 void vrai_test(){
-
+   // Connexion::linkServer("127.0.0.1");
 
     double temp_init = 50;
     double temp_final = 0;
@@ -62,11 +63,7 @@ void vrai_test(){
     graphe.add_missing_arcs(DBL_MAX); // On rend le graphe complet
 
     Graphe<double,ValueData>::CycleEulerien solutionInitiale = graphe.getFirstCycle();
-    //Connexion::linkServer("192.168.1.11");
-    //graphe.ServeurSend(solutionInitiale);
-   // Connexion::commit("s{0,0,5,5,#222222}", true);
-   // Connexion::push();
-   //   graphe.toFile("recuit_initial", "a", "b", "c", solutionInitiale);
+   // graphe.toFile("recuit_initial", "a", "b", "c", solutionInitiale);
 
     cout << "cout solution init: " << cout_cycle(solutionInitiale) << endl;
     cout << "cout solution init: " << solutionInitiale.arcsList << endl;
@@ -78,7 +75,7 @@ void vrai_test(){
     cout << "cout de la solution: " << solution.solution.arcsList << endl;
     //cout << "meilleur chemin: " << solution.solution.arcsList << endl;
 
-
+   // Connexion::unlinkServer();
 }
 
 #endif // VRAI_TEST

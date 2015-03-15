@@ -15,6 +15,7 @@ class Graphe {
 
 protected:
     int prochaineClef;
+    static int last_cost;
 
 public:
 
@@ -24,7 +25,9 @@ public:
     public:
 
         PElement< Arete<ArcCost, VertexType> >* arcsList;
+
         const Graphe* associatedGraphe;
+
 
         void insert(const Arete<ArcCost, VertexType> & arete){
             for(PElement<Arete<ArcCost, VertexType> >* it = arcsList; it != NULL; it = it->suivant){
@@ -62,10 +65,12 @@ public:
             } else cerr << "Impossible d'ouvrir le fichier !" << endl;
         }
 
+
         CycleEulerien(const Graphe *g):arcsList(NULL),associatedGraphe(g){}
 
+
         /**
-         * @brief CycleEulerien construit un cycle à partir d'un autre, pas de copie des éléments
+         * @brief CycleEulerien construit un cycle à partir d'un autre, copie des éléments
          * @param c
          */
         CycleEulerien(const CycleEulerien &c):
@@ -76,8 +81,8 @@ public:
                 arcsList = new PElement<Arete<ArcCost,VertexType> >(*c.arcsList);
         }
 
-
         static CycleEulerien changement_aleatoire(const CycleEulerien &cycle){
+
 
             CycleEulerien ret = CycleEulerien(cycle);
             pair<Arete<ArcCost,VertexType>*,int> first = ret.arcsList->randomElement();
@@ -90,6 +95,7 @@ public:
 
                 second = ret.arcsList->randomElement();
             }
+
 
             //On viens de tirer deux arcs au hasard qui ne sont pas l'un à la suite de l'autre
 
@@ -115,6 +121,7 @@ public:
                 throw Exception("pas normal");
             }
 
+
             return ret;
         }
 
@@ -132,6 +139,7 @@ public:
         static void invert_path( Sommet<VertexType>* from,const Sommet<VertexType> *to, const CycleEulerien &c){
             PElement< Arete<ArcCost, VertexType> >* temp = c.arcsList;
             //On atteind le point from
+
             for(; temp->valeur->debut->valeur != from->valeur; temp = temp->suivant);
 
             // récursivité
@@ -162,9 +170,11 @@ public:
 
     CycleEulerien getFirstCycle()const{
         CycleEulerien c(this);
+
         PElement<Sommet<VertexType> >* remaining = new PElement<Sommet<VertexType> >(*lSommets); //lSommets->copy();
         Sommet<VertexType>* last = remaining->randomElement().first;
         Sommet<VertexType>* first = last;
+
         PElement<Sommet<VertexType> > ::retire(last,remaining); //enlève le premier sommet TODO: attention que lsommet ne soit pas modifié !
         while(PElement<Sommet<VertexType> >::taille(remaining) > 0  ){
                 Sommet<VertexType>* sommet = remaining->randomElement().first;
@@ -231,7 +241,7 @@ public:
 
 
     void toFile(string filename, string titre, string legende, string resume, const CycleEulerien&);
-    void ServeurSend(const CycleEulerien&);
+    void ServeurSend(const CycleEulerien&) const;
 
 
 };
@@ -407,7 +417,7 @@ void Graphe<S, ValueData>::toFile(string filename, string titre, string legende,
 
 
 template <class S, class ValueData>
-void Graphe<S, ValueData>::ServeurSend(const CycleEulerien& c) {
+void Graphe<S, ValueData>::ServeurSend(const CycleEulerien& c) const {
     PElement<Arete<double,ValueData> > *temp = lAretes;
     string couleur;
     while (temp != NULL) {
